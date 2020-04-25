@@ -1,7 +1,7 @@
 package model;
 
 public class Driver {
-	private String id;
+	private String kode;
 	private String full_name;
 	private String email;
 	private String telp_no;
@@ -9,7 +9,7 @@ public class Driver {
 	private Location location;
 	
 	public Driver() {
-		
+	    super();
 	}
 	
 	public Driver(String full_name, String email,
@@ -23,13 +23,13 @@ public class Driver {
 		this.location = location;
 	}
 	
-	public String getId() {
-		return id;
-	}
+	public final String getKode() {
+            return kode;
+        }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+        public final void setKode(String kode) {
+            this.kode = kode;
+        }
 	
 	public String getFull_name() {
 		return full_name;

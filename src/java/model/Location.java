@@ -1,12 +1,12 @@
 package model;
 
 public class Location {
-	private String id;
+	private String kode;
 	private String street;
 	private String city;
 	
 	public Location() {
-		
+	    super();
 	}
 	
 	public Location(String street, String city) {
@@ -15,13 +15,13 @@ public class Location {
 		this.city = city;
 	}
 	
-	public String getId() {
-		return this.id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
+	public final String getKode() {
+            return kode;
+        }
+
+        public final void setKode(String kode) {
+            this.kode = kode;
+        }
 	
 	public String getStreet() {
 		return this.street;

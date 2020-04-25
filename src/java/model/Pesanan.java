@@ -3,7 +3,7 @@ package model;
 import java.util.List;
 
 public class Pesanan {
-	private String id;
+	private String kode;
 	private String user_id;
 	private String restaurant_id;
 	private String driver_id;
@@ -14,7 +14,7 @@ public class Pesanan {
 	private int total_cost;
 	
 	public Pesanan() {
-		
+            super();
 	}
 	
 	public Pesanan(String user_id, String restaurant_id,
@@ -33,13 +33,13 @@ public class Pesanan {
 		this.total_cost = total_cost;
 	}
 	
-	public String getId() {
-		return this.id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
+	public final String getKode() {
+            return kode;
+        }
+
+        public final void setKode(String kode) {
+            this.kode = kode;
+        }
 	
 	public String getUserId() {
 		return this.user_id;

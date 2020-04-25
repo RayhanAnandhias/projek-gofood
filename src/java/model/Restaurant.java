@@ -3,7 +3,7 @@ package model;
 import java.util.List;
 
 public class Restaurant {
-	private String id;
+	private String kode;
 	private String name;
 	private Location location;
 	private String telp_no;
@@ -12,7 +12,7 @@ public class Restaurant {
 	private List<Food> menu;
 	
 	public Restaurant() {
-		
+	    super();
 	}
 	
 	public Restaurant(String name, Location location,
@@ -25,13 +25,13 @@ public class Restaurant {
 		this.menu = menu;
 	}
 	
-	public String getId() {
-		return this.id;
-	}
+	public final String getKode() {
+            return kode;
+        }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+        public final void setKode(String kode) {
+            this.kode = kode;
+        }
 	
 	public String getName() {
 		return this.name;

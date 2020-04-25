@@ -1,12 +1,12 @@
 package model;
 
 public class Motor {
-	private String id;
+	private String kode;
 	private String no_plat;
 	private String merk;
 	
 	public Motor() {
-		
+            super();
 	}
 	
 	public Motor(String no_plat, String merk) {
@@ -15,13 +15,13 @@ public class Motor {
 		this.merk = merk;
 	}
 	
-	public String getId() {
-		return this.id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
+	public final String getKode() {
+            return kode;
+        }
+
+        public final void setKode(String kode) {
+            this.kode = kode;
+        }
 	
 	public String getNo_Plat() {
 		return this.no_plat;

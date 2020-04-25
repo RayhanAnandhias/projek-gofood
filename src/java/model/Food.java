@@ -1,7 +1,7 @@
 package model;
 
 public class Food {
-	private String id;
+	private String kode;
 	private String name;
 	private int price;
 	private int quantity;
@@ -9,7 +9,7 @@ public class Food {
 	//private List<Picture> picture;
 	
 	public Food() {
-		
+	    super();
 	}
 	
 	public Food(String name, int price, int quantity,
@@ -21,13 +21,13 @@ public class Food {
 		this.detail = detail;
 	}
 	
-	public String getId() {
-		return id;
-	}
+	public final String getKode() {
+            return kode;
+        }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+        public final void setKode(String kode) {
+            this.kode = kode;
+        }
 	
 	public String getName() {
 		return name;

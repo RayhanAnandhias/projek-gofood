@@ -1,7 +1,7 @@
 package model;
 
 public class User {
-	private String id;
+	private String kode;
 	private String full_name;
 	private String email;
 	private String telp_no;
@@ -9,7 +9,7 @@ public class User {
 	private int saldo_gopay;
 
 	public User() {
-		
+            super();
 	}
 	
 	public User(String full_name, String email,
@@ -22,13 +22,13 @@ public class User {
 		this.saldo_gopay = saldo_gopay;
 	}
 
-	public String getId() {
-		return id;
-	}
+	public final String getKode() {
+            return kode;
+        }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+        public final void setKode(String kode) {
+            this.kode = kode;
+        }
 
 	public String getFull_name() {
 		return full_name;
