@@ -92,4 +92,15 @@ public class MongoDbUtils {
 		}		
 		return true;
 	}
+    
+    public ArrayList<Driver> getDriver() throws IOException {		
+		ArrayList<Driver> resultList = new ArrayList<>();
+		FindIterable<Driver> driverIterable = driverCollection.find();
+		
+		for (Driver driver : driverIterable) {
+			System.out.println(driver);
+			resultList.add(driver);
+		}		
+		return resultList;
+	}
 }

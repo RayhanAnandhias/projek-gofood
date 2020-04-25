@@ -6,12 +6,16 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import model.Driver;
 
 /**
  *
@@ -65,6 +69,9 @@ public class ActionController extends HttpServlet {
         else if("RegRest".equals(action)) {
         	
         }
+        else if("View Driver".equals(action)) {
+        	showDriverData(request, response, mongodbUtils);
+        }
         else if("Back to Main Menu".equals(action)){
         	RequestDispatcher rd = request.getRequestDispatcher("/OperatorMenu.jsp");
 			rd.forward(request, response);
@@ -80,5 +87,16 @@ public class ActionController extends HttpServlet {
     public String getServletInfo() {
         return "ActionController Servlet";
     }// </editor-fold>
-
+    
+    public void showDriverData(HttpServletRequest request, HttpServletResponse response,
+			MongoDbUtils mongodbUtils) {
+    	try {
+			List<Driver> listDriver = mongodbUtils.getDriver();
+			request.setAttribute("dataList", listDriver);
+			request.getRequestDispatcher("/ReadDriver.jsp").forward(request, response);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
 }

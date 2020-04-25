@@ -7,6 +7,9 @@
 <title>Register Driver</title>
 </head>
 <body>
+	<form action="ActionController" method="post">
+		<input type="submit" name="action" value="Back to Main Menu" style="font-family: 'Comfortaa'">
+	</form>
 	<div align="center">
 		<BR><BR><h1 style="font-family: 'Comfortaa'">Register Driver</h1><BR><BR>
 	</div>

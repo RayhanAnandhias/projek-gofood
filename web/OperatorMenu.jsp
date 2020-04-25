@@ -12,7 +12,9 @@
 			<h1 style="font-family: 'Comfortaa'">Welcome Operator</h1><br><br>
 			<form action="ActionController" method="post">
 				<input type="submit" name="action" value="Register Driver" style="font-family: 'Comfortaa'">
-				<input type="submit" name="action" value="Register Restaurant" style="font-family: 'Comfortaa'">
+				<input type="submit" name="action" value="Register Restaurant" style="font-family: 'Comfortaa'"><br><br>
+				<input type="submit" name="action" value="View Driver" style="font-family: 'Comfortaa'">
+				<input type="submit" name="action" value="View Restaurant" style="font-family: 'Comfortaa'">
         	</form>
 		</div>
 	</body>
