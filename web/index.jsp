@@ -10,9 +10,13 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Login User Gofood</title>
+        <title>Gofood App</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Welcome To Gofood!</h1>
+        <form action="ActionController" method="post">
+            <input type="submit" name="action" value="Sign Up">
+            <input type="submit" name="action" value="Sign In">
+        </form>
     </body>
 </html>
