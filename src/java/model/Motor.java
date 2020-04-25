@@ -1,7 +1,6 @@
 package model;
 
 public class Motor {
-	private String kode;
 	private String no_plat;
 	private String merk;
 	
@@ -14,14 +13,6 @@ public class Motor {
 		this.no_plat = no_plat;
 		this.merk = merk;
 	}
-	
-	public final String getKode() {
-            return kode;
-        }
-
-        public final void setKode(String kode) {
-            this.kode = kode;
-        }
 	
 	public String getNo_Plat() {
 		return this.no_plat;

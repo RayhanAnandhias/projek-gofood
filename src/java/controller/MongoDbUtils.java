@@ -30,12 +30,15 @@ import java.io.IOException;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.client.FindIterable;
+import model.User;
+import org.bson.types.ObjectId;
 /**
  *
  * @author rayhan
  */
 public class MongoDbUtils {
     private MongoDatabase database;
+    private MongoCollection<User> users;
     //collection
     
     public MongoDbUtils() {
@@ -50,6 +53,41 @@ public class MongoDbUtils {
         
         database = mongo.getDatabase("myDb"); 
         database = database.withCodecRegistry(pojoCodecRegistry);
-        //studentsCollection = database.getCollection("studentsCollection", Student.class);
+        users = database.getCollection("users", User.class);
+    }
+    
+    public boolean insertDataUser(String name, String pwd, String email, String noTelp, int saldo) throws IOException {
+        String id = new ObjectId().toString();
+        User user;
+        try {	
+                user = users.find(eq("email", email)).first();
+                if(user == null) {
+                    user = new User(name, email, pwd, noTelp, null, saldo);	
+                    user.setKode(id);
+                    users.insertOne(user);			
+                    System.out.println("new user inserted");
+                } else {
+                    return false;
+                }
+        } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+        }		
+        return true;
+    }
+
+    boolean validateUser(String email, String pwd) {
+        User user;
+        try {
+            user = users.find(and(eq("email", email), eq("password", pwd))).first();
+            if(user != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
