@@ -9,12 +9,20 @@ import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClients;
 import com.mongodb.Block;
 import com.mongodb.MongoClientURI;
+import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+
+import model.Driver;
+import model.Location;
+import model.Motor;
+
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
+
 import java.util.List;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
@@ -37,8 +45,14 @@ import com.mongodb.client.FindIterable;
 public class MongoDbUtils {
     private MongoDatabase database;
     //collection
+    MongoCollection<Driver> driverCollection;
     
     public MongoDbUtils() {
+    	// Creating Credentials 
+		MongoCredential credential; 
+		credential = MongoCredential.createCredential("User", "ProjectGoFood", 
+				"password".toCharArray()); 
+		System.out.println("Connected to the database successfully"); 
         CodecRegistry pojoCodecRegistry = 
                 fromRegistries(MongoClient.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder()
@@ -48,8 +62,34 @@ public class MongoDbUtils {
             MongoClient("localhost", MongoClientOptions.builder()
                 .codecRegistry(pojoCodecRegistry).build());
         
-        database = mongo.getDatabase("myDb"); 
+        database = mongo.getDatabase("ProjectGoFood"); 
+        //database = mongo.getDatabase("myDb"); 
         database = database.withCodecRegistry(pojoCodecRegistry);
-        //studentsCollection = database.getCollection("studentsCollection", Student.class);
+        System.out.println("Credentials ::"+ credential);
+		driverCollection = database.getCollection("driverCollection", Driver.class);
     }
+    
+  //method untuk insert driver ke collection
+    public boolean insertDriver(String fullName, String email, String telpNum, String platNum, String merk, 
+    		String street, String city) {
+		try {
+			Motor motor = new Motor(platNum, merk);
+			
+			Location location = new Location(street, city);
+			String id = new ObjectId().toString();
+			location.setKode(id);
+			
+			Driver driver = new Driver(fullName, email, telpNum, motor, location);	
+			
+			id = new ObjectId().toString();
+			driver.setKode(id);
+			
+			driverCollection.insertOne(driver);			
+			System.out.println("data inserted");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
+	}
 }
