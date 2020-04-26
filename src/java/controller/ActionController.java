@@ -72,7 +72,26 @@ public class ActionController extends HttpServlet {
         	
         }
         else if("View Driver".equals(action)) {
+        	RequestDispatcher rd = request.getRequestDispatcher("/ReadDriver.jsp");
+			rd.forward(request, response);
+        }
+        else if("Retrieve All Driver Data".equals(action)) {
         	showDriverData(request, response, mongodbUtils);
+        }
+        else if("Search Driver by".equals(action)) {
+        	try{ 
+        		String category = request.getParameter("attribute driver");
+    	    	String boxValue = request.getParameter("search driver box");
+    	    	
+	    		List<Driver> listDriver = mongodbUtils.getDriverByCategory(category, boxValue);
+				request.setAttribute("dataList", listDriver);
+				request.setAttribute("sdbvalue", boxValue);
+				request.setAttribute("attributedriver", category);
+				request.getRequestDispatcher("/ReadDriver.jsp").forward(request, response);
+            } 
+            catch(NullPointerException e){ 
+            	request.getRequestDispatcher("/ReadDriver.jsp").forward(request, response);
+            } 
         }
         else if("delete driver".equals(action)) {
         	String row = request.getParameter("kode");

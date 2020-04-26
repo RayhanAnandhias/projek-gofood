@@ -17,8 +17,56 @@
 		</form>
 		<div align="center">
 			<table border="1" cellpadding="5" style="font-family: 'Comfortaa'">
-	            <caption><h2>List of drivers</h2></caption>
+	            <h1 style="font-family: 'Comfortaa'">List of drivers</h1>
 	            
+	            <form action="ActionController" method="post">
+	            	<label style="font-family: 'Comfortaa'">Search Driver</label>
+	            	
+	            	<span style="margin-left:1em"></span>
+					
+					<c:set var = "boxvalue" value = "${sdbvalue}"/>
+					<c:set var = "atrdrivval" value = "${attributedriver}"/>
+	            	<input type="search" name="search driver box" style="font-family: 'Comfortaa'" value="${boxvalue}" onload="setCheckedValueOfRadioButtonGroup('${atrdrivval}')">
+	            	<span style="margin-left:1em">
+						<input type="submit" name="action" value="Search Driver by" style="font-family: 'Comfortaa'" />
+					</span>
+					
+					<script>
+						function setCheckedValueOfRadioButtonGroup(vValue) {
+							var radios = document.getElementsByName("attribute driver");
+						    for (var j = 0; j < radios.length; j++) {
+						        if (radios[j].value == vValue) {
+						            radios[j].checked = true;
+						            break;
+						        }
+						    }
+						}
+					</script>
+
+					<span style="margin-left:3em">
+						<input type="submit" name="action" value="Retrieve All Driver Data" style="font-family: 'Comfortaa'"/>
+					</span>
+					
+					<br><br>
+					<label style="font-family: 'Comfortaa'">Search by :</label>
+					<input type="radio" id="fullname" name="attribute driver" value="full_name">
+						<label for="fullname" style="font-family: 'Comfortaa'">Full Name</label><span style="margin-left:1em"></span>
+					<input type="radio" id="email" name="attribute driver" value="email">
+						<label for="email" style="font-family: 'Comfortaa'">Email</label><span style="margin-left:1em"></span>
+					<input type="radio" id="telpnum" name="attribute driver" value="telp_no">
+						<label for="telpnum" style="font-family: 'Comfortaa'">Telephone Number</label><span style="margin-left:1em"></span>
+					<input type="radio" id="numplat" name="attribute driver" value="no_plat">
+						<label for="numplat" style="font-family: 'Comfortaa'">Plat Number</label><span style="margin-left:1em"></span>
+					<input type="radio" id="merk" name="attribute driver" value="merk">
+						<label for="merk" style="font-family: 'Comfortaa'">Merk</label><span style="margin-left:1em"></span>
+					<input type="radio" id="street" name="attribute driver" value="street">
+						<label for="street" style="font-family: 'Comfortaa'">Street</label><span style="margin-left:1em"></span>
+					<input type="radio" id="city" name="attribute driver" value="city">
+						<label for="city" style="font-family: 'Comfortaa'">City</label><span style="margin-left:1em"></span>
+					
+					<br><br>
+					
+				</form>
 	            <tr>
 	                <th>Full Name</th>
 	                <th>Email</th>

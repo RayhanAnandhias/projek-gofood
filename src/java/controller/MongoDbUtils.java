@@ -106,6 +106,67 @@ public class MongoDbUtils {
 		return resultList;
 	}
     
+    public ArrayList<Driver> getDriverByCategory(String category, String value) throws IOException {		
+		ArrayList<Driver> resultList = new ArrayList<>();
+		FindIterable<Driver> driverIterable = driverCollection.find();
+		
+		for (Driver driver : driverIterable) {
+			switch(category) {
+				case "full_name":{
+					if(driver.getFull_name().equals(value)) {
+						System.out.println(driver);
+						resultList.add(driver);
+					}
+					break;
+				}
+				case "email":{
+					if(driver.getEmail().equals(value)) {
+						System.out.println(driver);
+						resultList.add(driver);
+					}
+					break;
+				}
+				case "telp_no":{
+					if(driver.getTelp_no().equals(value)) {
+						System.out.println(driver);
+						resultList.add(driver);
+					}
+					break;
+				}
+				case "no_plat":{
+					if(driver.getMotor().getNo_Plat().equals(value)) {
+						System.out.println(driver);
+						resultList.add(driver);
+					}
+					break;
+				}
+				case "merk":{
+					if(driver.getMotor().getMerk().equals(value)) {
+						System.out.println(driver);
+						resultList.add(driver);
+					}
+					break;
+				}
+				case "street":{
+					if(driver.getLocation().getStreet().equals(value)) {
+						System.out.println(driver);
+						resultList.add(driver);
+					}
+					break;
+				}
+				case "city":{
+					if(driver.getLocation().getCity().equals(value)) {
+						System.out.println(driver);
+						resultList.add(driver);
+					}
+					break;
+				}
+			}
+			
+		}		
+		return resultList;
+	}
+    
     public boolean updateDriver(String row, String fullName, String email, String telpNum, String platNum, String merk, String locationKode,
     		String street, String city) {		
 		try {	
