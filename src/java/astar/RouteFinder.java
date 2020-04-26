@@ -11,36 +11,37 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.stream.Collectors;
+import model.Location;
 
-public class RouteFinder<T extends GraphNode> {
+public class RouteFinder {
     
-    private final Graph<T> graph;
-    private final Scorer<T> nextNodeScorer;
-    private final Scorer<T> targetScorer;
+    private final Graph graph;
+    private final HaversineScorer nextNodeScorer;
+    private final HaversineScorer targetScorer;
 
-    public RouteFinder(Graph<T> graph, Scorer<T> nextNodeScorer, Scorer<T> targetScorer) {
+    public RouteFinder(Graph graph, HaversineScorer nextNodeScorer, HaversineScorer targetScorer) {
         this.graph = graph;
         this.nextNodeScorer = nextNodeScorer;
         this.targetScorer = targetScorer;
     }
 
-    public List<T> findRoute(T from, T to) {
-        Map<T, RouteNode<T>> allNodes = new HashMap<>();
+    public List<Location> findRoute(Location from, Location to) {
+        Map<Location, RouteNode> allNodes = new HashMap<>();
         Queue<RouteNode> openSet = new PriorityQueue<>();
 
-        RouteNode<T> start = new RouteNode<>(from, null, 0d, targetScorer.computeCost(from, to));
+        RouteNode start = new RouteNode(from, null, 0d, targetScorer.computeCost(from, to));
         allNodes.put(from, start);
         openSet.add(start);
 
         while (!openSet.isEmpty()) {
             System.out.println("Open Set contains: " + openSet.stream().map(RouteNode::getCurrent).collect(Collectors.toSet()));
-            RouteNode<T> next = openSet.poll();
+            RouteNode next = openSet.poll();
             System.out.println("Looking at node: " + next);
             if (next.getCurrent().equals(to)) {
                 System.out.println("Found our destination!");
 
-                List<T> route = new ArrayList<>();
-                RouteNode<T> current = next;
+                List<Location> route = new ArrayList<>();
+                RouteNode current = next;
                 do {
                     route.add(0, current.getCurrent());
                     current = allNodes.get(current.getPrevious());
@@ -52,7 +53,7 @@ public class RouteFinder<T extends GraphNode> {
 
             graph.getConnections(next.getCurrent()).forEach(connection -> {
                 double newScore = next.getRouteScore() + nextNodeScorer.computeCost(next.getCurrent(), connection);
-                RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<>(connection));
+                RouteNode nextNode = allNodes.getOrDefault(connection, new RouteNode(connection));
                 allNodes.put(connection, nextNode);
 
                 if (nextNode.getRouteScore() > newScore) {

@@ -38,7 +38,9 @@ import model.Location;
 import astar.*;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -78,10 +80,13 @@ public class MongoDbUtils {
     public boolean insertDataUser(String name, String pwd, String email, String noTelp, int saldo) {
         String id = new ObjectId().toString();
         User user;
+        Location loc;
+        Random rn = new Random();
         try {	
+                loc = locations.find(eq("kode", Integer.toString(rn.nextInt(5) + 1))).first();
                 user = users.find(eq("email", email)).first();
                 if(user == null) {
-                    user = new User(name, email, pwd, noTelp, null, saldo);	
+                    user = new User(name, email, pwd, noTelp, loc, saldo);	
                     user.setKode(id);
                     users.insertOne(user);			
                     System.out.println("new user inserted");
@@ -174,53 +179,57 @@ public class MongoDbUtils {
         }
     }
     
-    public void findShortestRoute(Location source, Location dest) {
-        Graph<Location> maps;
-        RouteFinder<Location> routeFinder;
-        
+    public List<Location> findShortestRoute(Location source, Location dest) {
+        Graph maps;
+        RouteFinder routeFinder;
         Map<String, Set<String>> connections = new HashMap<>();
-        Set<Location> location  = getAllLocData();
-        
-        connections.put("1", Stream.of("2","4","5").collect(Collectors.toSet()));
-        connections.put("2", Stream.of("1","4","6").collect(Collectors.toSet()));
-        connections.put("3", Stream.of("4","8","5").collect(Collectors.toSet()));
-        connections.put("4", Stream.of("2","1","3","5","10").collect(Collectors.toSet()));
-        connections.put("5", Stream.of("1","3","4","9").collect(Collectors.toSet()));
-        connections.put("6", Stream.of("2","8","7").collect(Collectors.toSet()));
-        connections.put("7", Stream.of("6","8","10").collect(Collectors.toSet()));
-        connections.put("8", Stream.of("3","6","7").collect(Collectors.toSet()));
-        connections.put("9", Stream.of("5","10").collect(Collectors.toSet()));
-        connections.put("10", Stream.of("4","9","7").collect(Collectors.toSet()));
-        
-        maps = new Graph<>(location,connections);
-        routeFinder = new RouteFinder<>(maps, new HaversineScorer(), new HaversineScorer());
-        List<Location> route = routeFinder.findRoute(source, dest);
-        System.out.println(route.stream().map(Location::getName).collect(Collectors.toList()));
+        try {
+            Set<Location> location  = getAllLocData();
+            connections.put("1", Stream.of("2","4","5").collect(Collectors.toSet()));
+            connections.put("2", Stream.of("1","4","6").collect(Collectors.toSet()));
+            connections.put("3", Stream.of("4","8","5").collect(Collectors.toSet()));
+            connections.put("4", Stream.of("2","1","3","5","10").collect(Collectors.toSet()));
+            connections.put("5", Stream.of("1","3","4","9").collect(Collectors.toSet()));
+            connections.put("6", Stream.of("2","8","7").collect(Collectors.toSet()));
+            connections.put("7", Stream.of("6","8","10").collect(Collectors.toSet()));
+            connections.put("8", Stream.of("3","6","7").collect(Collectors.toSet()));
+            connections.put("9", Stream.of("5","10").collect(Collectors.toSet()));
+            connections.put("10", Stream.of("4","9","7").collect(Collectors.toSet()));
+            maps = new Graph(location,connections);
+            routeFinder = new RouteFinder(maps, new HaversineScorer(), new HaversineScorer());
+            List<Location> route = routeFinder.findRoute(source, dest);
+            //System.out.println(route.stream().map(Location::getName).collect(Collectors.toList()));
+            return route;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     
-//    public boolean insertLocData() {
-//        try {
-//            Set<Location> loc = new HashSet<>();
-//            loc.add(new Location("1", "Acton Town", 51.5028, -0.2801));
-//            loc.add(new Location("2", "Aldgate", 51.5143, -0.0755));
-//            loc.add(new Location("3", "Aldgate East", 51.5154, -0.0726));
-//            loc.add(new Location("4", "All Saints", 51.5107, -0.013));
-//            loc.add(new Location("5", "Alperton", 51.5407, -0.2997));
-//            loc.add(new Location("6", "Amersham", 51.6736, -0.607));
-//            loc.add(new Location("7", "Angel", 51.5322, -0.1058));
-//            loc.add(new Location("8", "Archway", 51.5653, -0.1353));
-//            loc.add(new Location("9", "Arnos Grove", 51.6164, -0.1331));
-//            loc.add(new Location("10", "Arsenal", 51.5586, -0.1059));
-//            for (Location location : loc) {
-//                locations.insertOne(location);
-//            }
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
+    public boolean insertLocData() {
+        try {
+            Set<Location> loc = new LinkedHashSet<>();
+            loc.add(new Location("1", "Acton Town", 51.5028, -0.2801));
+            loc.add(new Location("2", "Aldgate", 51.5143, -0.0755));
+            loc.add(new Location("3", "Aldgate East", 51.5154, -0.0726));
+            loc.add(new Location("4", "All Saints", 51.5107, -0.013));
+            loc.add(new Location("5", "Alperton", 51.5407, -0.2997));
+            loc.add(new Location("6", "Amersham", 51.6736, -0.607));
+            loc.add(new Location("7", "Angel", 51.5322, -0.1058));
+            loc.add(new Location("8", "Archway", 51.5653, -0.1353));
+            loc.add(new Location("9", "Arnos Grove", 51.6164, -0.1331));
+            loc.add(new Location("10", "Arsenal", 51.5586, -0.1059));
+            for (Location location : loc) {
+                System.out.println(location.getKode() + "," + location.getStreet());
+                locations.insertOne(location);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     
     
 //    public boolean createPesanan(String userId, String restoId, String driverId, ) {

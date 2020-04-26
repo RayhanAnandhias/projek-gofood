@@ -5,29 +5,30 @@
  */
 package astar;
 import java.util.StringJoiner;
+import model.Location;
 
-class RouteNode<T extends GraphNode> implements Comparable<RouteNode> {
-    private final T current;
-    private T previous;
+class RouteNode implements Comparable<RouteNode> {
+    private final Location current;
+    private Location previous;
     private double routeScore;
     private double estimatedScore;
 
-    RouteNode(T current) {
+    RouteNode(Location current) {
         this(current, null, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 
-    RouteNode(T current, T previous, double routeScore, double estimatedScore) {
+    RouteNode(Location current, Location previous, double routeScore, double estimatedScore) {
         this.current = current;
         this.previous = previous;
         this.routeScore = routeScore;
         this.estimatedScore = estimatedScore;
     }
 
-    T getCurrent() {
+    Location getCurrent() {
         return current;
     }
 
-    T getPrevious() {
+    Location getPrevious() {
         return previous;
     }
 
@@ -39,7 +40,7 @@ class RouteNode<T extends GraphNode> implements Comparable<RouteNode> {
         return estimatedScore;
     }
 
-    void setPrevious(T previous) {
+    void setPrevious(Location previous) {
         this.previous = previous;
     }
 

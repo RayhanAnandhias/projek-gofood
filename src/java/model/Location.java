@@ -1,41 +1,54 @@
 package model;
 
-import astar.GraphNode;
 import java.util.StringJoiner;
 
-public class Location implements GraphNode {
-    private final String id;
-    private final String name;
-    private final double latitude;
-    private final double longitude;
+public class Location {
+    private String kode;
+    private String street;
+    private double latitude;
+    private double longitude;
 
+    public Location() {
+        super();
+    }
+    
     public Location(String id, String name, double latitude, double longitude) {
-        this.id = id;
-        this.name = name;
+        super();
+        this.kode = id;
+        this.street = name;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    @Override
-    public String getId() {
-        return id;
+    public final String getKode() {
+        return kode;
     }
 
-    public String getName() {
-        return name;
+    public final void setKode(String kode) {
+        this.kode = kode;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public double getLatitude() {
         return latitude;
     }
 
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     public double getLongitude() {
         return longitude;
     }
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", Location.class.getSimpleName() + "[", "]").add("id='" + id + "'")
-            .add("name='" + name + "'").add("latitude=" + latitude).add("longitude=" + longitude).toString();
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

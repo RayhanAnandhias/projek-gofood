@@ -70,8 +70,8 @@ public class ActionController extends HttpServlet {
             }
         }
         else if(action.equals("InsertLoc")) {
-//            boolean result  = mongodbUtils.insertLocData();
-            boolean result = true;
+            boolean result  = mongodbUtils.insertLocData();
+//            boolean result = true;
             if(result) {
                 request.getRequestDispatcher("/index.jsp")
                     .forward(request, response);

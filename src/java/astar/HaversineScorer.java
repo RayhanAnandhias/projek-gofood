@@ -7,9 +7,7 @@ package astar;
 
 import model.Location;
 
-public class HaversineScorer implements Scorer<Location> {
-    
-    @Override
+public class HaversineScorer {
     public double computeCost(Location from, Location to) {
         double R = 6372.8; // In kilometers
 
