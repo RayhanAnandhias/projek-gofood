@@ -1,5 +1,6 @@
 package model;
 
+
 public class User {
     private String kode;
     private String full_name;
