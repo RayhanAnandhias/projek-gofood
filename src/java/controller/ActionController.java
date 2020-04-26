@@ -16,13 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import model.Driver;
+import model.Location;
+import model.Motor;
 
 /**
  *
  * @author rayhan
  */
 public class ActionController extends HttpServlet {
-    
+	private String vrow;
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -71,6 +73,55 @@ public class ActionController extends HttpServlet {
         }
         else if("View Driver".equals(action)) {
         	showDriverData(request, response, mongodbUtils);
+        }
+        else if("delete driver".equals(action)) {
+        	String row = request.getParameter("kode");
+			System.out.println("ROW DELETED = "+row);
+			
+			boolean result = mongodbUtils.deleteDriver(row);
+			if(result) {
+				showDriverData(request, response, mongodbUtils);
+			}else {
+				RequestDispatcher rd = request.getRequestDispatcher("/FailedDelete.jsp");
+				rd.forward(request, response);
+			}
+        }
+        else if("update driver".equals(action)) {
+        	vrow = request.getParameter("kode");
+        	String fullName = request.getParameter("fullname");
+        	String email = request.getParameter("email");
+        	String telpNum = request.getParameter("telpnum");
+        	String numPlat = request.getParameter("numplat");
+        	String merk = request.getParameter("merk");
+        	String locationKode = request.getParameter("locationkode");
+        	String street = request.getParameter("street");
+        	String city = request.getParameter("city");
+        	
+        	Location location = new Location(street, city);
+        	location.setKode(locationKode);
+        	
+        	Driver driver = new Driver(fullName, email, telpNum, new Motor(numPlat, merk), location);
+        	request.setAttribute("driver", driver);	
+			request.getRequestDispatcher("/UpdateDriver.jsp").forward(request, response);
+        }
+        else if("AfterUpdateDriver".equals(action)) {
+        	String fullName = request.getParameter("updatedfullname");
+        	String email = request.getParameter("updatedemail");
+        	String telpNum = request.getParameter("updatedtelpnum");
+        	String numPlat = request.getParameter("updatedplatnum");
+        	String merk = request.getParameter("updatedmerk");
+        	String locationKode = request.getParameter("locationkode");
+        	String street = request.getParameter("updatedstreet");
+        	String city = request.getParameter("updatedcity");
+        	
+        	System.out.println("ROW UPDATED = "+vrow);				
+			boolean resultUpdate = mongodbUtils.updateDriver(vrow, fullName, email, telpNum, numPlat, merk, locationKode, street, city);
+			if(resultUpdate) {
+				showDriverData(request, response, mongodbUtils);
+			}else {
+				RequestDispatcher rdUpdate = request.getRequestDispatcher("/FailedUpdate.jsp");
+				rdUpdate.forward(request, response);
+			}
         }
         else if("Back to Main Menu".equals(action)){
         	RequestDispatcher rd = request.getRequestDispatcher("/OperatorMenu.jsp");

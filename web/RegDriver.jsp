@@ -27,7 +27,7 @@
 		
 		<span style="margin-left:60em">
 			<input type="hidden" name="action" value="RegDriver">
-			<input type="submit" style="font-family: 'Comfortaa'"/>
+			<input type="submit" value="Register" style="font-family: 'Comfortaa'"/>
 		</span>
 	</form>
 </body>

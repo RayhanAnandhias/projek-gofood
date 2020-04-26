@@ -25,8 +25,8 @@
 	                <th>Telephone Number</th>
 	                <th>Motor</th>
 	                <th>Location</th>
-	                <th>Delete</th>
 	                <th>Update</th>
+	                <th>Delete</th>
 	            </tr>
 	            <c:forEach items="${dataList}" var="dataItem">
 	            	<form action="ActionController" method="post">
@@ -36,14 +36,18 @@
 				            <td>${dataItem.getTelp_no()}</td>
 				            <td>${dataItem.getMotor().getNo_Plat()} - ${dataItem.getMotor().getMerk()}</td>
 				            <td>${dataItem.getLocation().getStreet()} - ${dataItem.getLocation().getCity()}</td>
-				            <td><input type="submit" name="action" value="delete" style="font-family: 'Comfortaa'"></td>
-				            <td><input type="hidden" name="action" value="before_update"><input type="submit" value="update" style="font-family: 'Comfortaa'"/></td>
+				            <td><input type="submit" name="action" value="update driver" style="font-family: 'Comfortaa'"></td>
+				        	<td><input type="submit" name="action" value="delete driver" style="font-family: 'Comfortaa'"></td>
 				        </tr>
+				        <input type="hidden" name="kode" value="${dataItem.getKode()}">
 				        <input type="hidden" name="fullname" value="${dataItem.getFull_name()}">
 				        <input type="hidden" name="email" value="${dataItem.getEmail()}">
 				        <input type="hidden" name="telpnum" value="${dataItem.getTelp_no()}">
-				        <input type="hidden" name="motor" value="${dataItem.getMotor()}">
-				        <input type="hidden" name="location" value="${dataItem.getLocation()}">
+				        <input type="hidden" name="numplat" value="${dataItem.getMotor().getNo_Plat()}">
+				        <input type="hidden" name="merk" value="${dataItem.getMotor().getMerk()}">
+				        <input type="hidden" name="locationkode" value="${dataItem.getLocation().getKode()}">
+				        <input type="hidden" name="street" value="${dataItem.getLocation().getStreet()}">
+				        <input type="hidden" name="city" value="${dataItem.getLocation().getCity()}">
 				     </form>
 			    </c:forEach>
 	        </table>

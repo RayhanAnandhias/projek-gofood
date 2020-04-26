@@ -12,9 +12,7 @@ public class Driver {
 	    super();
 	}
 	
-	public Driver(String full_name, String email,
-			String telp_no, Motor motor, 
-			Location location) {
+	public Driver(String full_name, String email, String telp_no, Motor motor, Location location) {
 		super();
 		this.full_name = full_name;
 		this.email = email;
@@ -24,12 +22,12 @@ public class Driver {
 	}
 	
 	public final String getKode() {
-            return kode;
-        }
+        return kode;
+    }
 
-        public final void setKode(String kode) {
-            this.kode = kode;
-        }
+    public final void setKode(String kode) {
+        this.kode = kode;
+    }
 	
 	public String getFull_name() {
 		return full_name;

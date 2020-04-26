@@ -12,6 +12,8 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 
@@ -103,4 +105,29 @@ public class MongoDbUtils {
 		}		
 		return resultList;
 	}
+    
+    public boolean updateDriver(String row, String fullName, String email, String telpNum, String platNum, String merk, String locationKode,
+    		String street, String city) {		
+		try {	
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("full_name", fullName));
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("email", email));
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("telp_no", telpNum));
+			Motor motor = new Motor(platNum, merk);
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("motor", motor));
+			Location location = new Location(street, city);
+			location.setKode(locationKode);
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("location", location));
+			System.out.println("data updated");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+    
+    public boolean deleteDriver(String row) {
+		DeleteResult del = driverCollection.deleteOne(eq("kode", row));
+		System.out.println("del on Driver = " + del.getDeletedCount());
+		return true;
+	} 
 }

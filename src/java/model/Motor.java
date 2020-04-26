@@ -16,12 +16,12 @@ public class Motor {
 	}
 	
 	public final String getKode() {
-            return kode;
-        }
+        return kode;
+    }
 
-        public final void setKode(String kode) {
-            this.kode = kode;
-        }
+    public final void setKode(String kode) {
+        this.kode = kode;
+    }
 	
 	public String getNo_Plat() {
 		return this.no_plat;

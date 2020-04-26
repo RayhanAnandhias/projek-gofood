@@ -16,12 +16,12 @@ public class Location {
 	}
 	
 	public final String getKode() {
-            return kode;
-        }
+        return kode;
+    }
 
-        public final void setKode(String kode) {
-            this.kode = kode;
-        }
+    public final void setKode(String kode) {
+        this.kode = kode;
+    }
 	
 	public String getStreet() {
 		return this.street;
