@@ -51,4 +51,10 @@ public class Location {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+    
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Location.class.getSimpleName() + "[", "]").add("id='" + kode + "'")
+            .add("name='" + street + "'").add("latitude=" + latitude).add("longitude=" + longitude).toString();
+    }
 }
