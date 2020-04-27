@@ -26,7 +26,7 @@
 					
 					<c:set var = "boxvalue" value = "${sdbvalue}"/>
 					<c:set var = "atrdrivval" value = "${attributedriver}"/>
-	            	<input type="search" name="search driver box" style="font-family: 'Comfortaa'" value="${boxvalue}" onload="setCheckedValueOfRadioButtonGroup('${atrdrivval}')">
+	            	<input type="search" name="search driver box" style="font-family: 'Comfortaa'" value="${boxvalue}" onchange="setCheckedValueOfRadioButtonGroup('${atrdrivval}')">
 	            	<span style="margin-left:1em">
 						<input type="submit" name="action" value="Search Driver by" style="font-family: 'Comfortaa'" />
 					</span>

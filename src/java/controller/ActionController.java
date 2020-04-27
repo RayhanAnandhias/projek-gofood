@@ -110,7 +110,6 @@ public class ActionController extends HttpServlet {
         	try{ 
         		String category = request.getParameter("attribute driver");
     	    	String boxValue = request.getParameter("search driver box");
-    	    	
 	    		List<Driver> listDriver = mongodbUtils.getDriverByCategory(category, boxValue);
 				request.setAttribute("dataList", listDriver);
 				request.setAttribute("sdbvalue", boxValue);

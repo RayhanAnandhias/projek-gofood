@@ -13,6 +13,9 @@ import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
@@ -24,6 +27,8 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.ObjectId;
 
 import java.util.List;
+import java.util.regex.Pattern;
+
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 import static java.util.Arrays.asList;
@@ -38,6 +43,7 @@ import java.io.IOException;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.ListIndexesIterable;
 /**
  *
  * @author rayhan
@@ -110,62 +116,45 @@ public class MongoDbUtils {
     
     public ArrayList<Driver> getDriverByCategory(String category, String value) throws IOException {		
 		ArrayList<Driver> resultList = new ArrayList<>();
-		FindIterable<Driver> driverIterable = driverCollection.find();
+		FindIterable<Driver> driverIterable = null;
 		
-		for (Driver driver : driverIterable) {
-			switch(category) {
-				case "full_name":{
-					if(driver.getFull_name().equals(value)) {
-						System.out.println(driver);
-						resultList.add(driver);
-					}
-					break;
-				}
-				case "email":{
-					if(driver.getEmail().equals(value)) {
-						System.out.println(driver);
-						resultList.add(driver);
-					}
-					break;
-				}
-				case "telp_no":{
-					if(driver.getTelp_no().equals(value)) {
-						System.out.println(driver);
-						resultList.add(driver);
-					}
-					break;
-				}
-				case "no_plat":{
-					if(driver.getMotor().getNo_Plat().equals(value)) {
-						System.out.println(driver);
-						resultList.add(driver);
-					}
-					break;
-				}
-				case "merk":{
-					if(driver.getMotor().getMerk().equals(value)) {
-						System.out.println(driver);
-						resultList.add(driver);
-					}
-					break;
-				}
-				case "street":{
-					if(driver.getLocation().getStreet().equals(value)) {
-						System.out.println(driver);
-						resultList.add(driver);
-					}
-					break;
-				}
-				case "city":{
-					if(driver.getLocation().getCity().equals(value)) {
-						System.out.println(driver);
-						resultList.add(driver);
-					}
-					break;
-				}
+		switch(category) {
+			case "full_name":{
+				driverIterable = driverCollection.find(regex("full_name", ".*" + Pattern.quote(value) + ".*"));
+				break;
 			}
-			
-		}		
+			case "email":{
+				driverIterable = driverCollection.find(regex("email", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "telp_no":{
+				driverIterable = driverCollection.find(regex("telp_no", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "no_plat":{
+				System.out.println("here");
+				driverIterable = driverCollection.find(regex("motor.no_Plat", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "merk":{
+				driverIterable = driverCollection.find(regex("motor.merk", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "street":{
+				driverIterable = driverCollection.find(regex("location.street", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "city":{
+				driverIterable = driverCollection.find(regex("location.city", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+		}
+		
+		for(Driver temp : driverIterable) {
+			resultList.add(temp);
+			System.out.println(temp);
+		}
+		
 		return resultList;
 	}
     
