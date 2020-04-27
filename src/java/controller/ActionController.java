@@ -69,7 +69,35 @@ public class ActionController extends HttpServlet {
 			}
         }
         else if("RegRest".equals(action)) {
-        	
+        	try{ 
+        		String fullName = request.getParameter("name");
+            	String street = request.getParameter("street");
+    			String city = request.getParameter("city");
+    			String telpNum = request.getParameter("telpnum");
+    			String detail = request.getParameter("detail");
+    			
+    			String foodName[] = request.getParameterValues("foodname");
+    			String foodPrice[] = request.getParameterValues("foodprice");
+    			String foodQuantity[] = request.getParameterValues("foodquant");
+    			String foodDetail[] = request.getParameterValues("fooddetail");
+    			
+    			boolean result = mongodbUtils.insertRestaurant(fullName, street, city, telpNum, detail, foodName, foodPrice,
+    					foodQuantity, foodDetail);
+    			
+    			if(result) {
+    				RequestDispatcher rd = request.getRequestDispatcher("/SuccessInsert.jsp");
+    				rd.forward(request, response);
+    			}
+    			else {
+    				RequestDispatcher rd = request.getRequestDispatcher("/FailedInsert.jsp");
+    				rd.forward(request, response);
+    			}
+    			
+            } 
+            catch(NumberFormatException e){ 
+            } 
+        	catch(NullPointerException e){ 
+            } 
         }
         else if("View Driver".equals(action)) {
         	RequestDispatcher rd = request.getRequestDispatcher("/ReadDriver.jsp");

@@ -17,9 +17,7 @@ import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 
-import model.Driver;
-import model.Location;
-import model.Motor;
+import model.*;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -48,6 +46,8 @@ public class MongoDbUtils {
     private MongoDatabase database;
     //collection
     MongoCollection<Driver> driverCollection;
+    MongoCollection<Restaurant> restaurantCollection;
+    MongoCollection<Food> foodCollection;
     
     public MongoDbUtils() {
     	// Creating Credentials 
@@ -69,9 +69,11 @@ public class MongoDbUtils {
         database = database.withCodecRegistry(pojoCodecRegistry);
         System.out.println("Credentials ::"+ credential);
 		driverCollection = database.getCollection("driverCollection", Driver.class);
+		restaurantCollection = database.getCollection("restaurantCollection", Restaurant.class);
+		foodCollection = database.getCollection("foodCollection", Food.class);
     }
     
-  //method untuk insert driver ke collection
+  //method untuk insert driver ke collections
     public boolean insertDriver(String fullName, String email, String telpNum, String platNum, String merk, 
     		String street, String city) {
 		try {
@@ -190,5 +192,41 @@ public class MongoDbUtils {
 		DeleteResult del = driverCollection.deleteOne(eq("kode", row));
 		System.out.println("del on Driver = " + del.getDeletedCount());
 		return true;
-	} 
+	}
+    
+    public boolean insertRestaurant(String fullName, String street, String city, String telpNum, String detail, String listFoodName[], 
+    		String listFoodPrice[], String listFoodQuant[], String listFoodDetail[]) {
+		try {
+			List<String> foodId = new ArrayList<>();
+			
+			//set var location and set the value
+			Location location = new Location(street, city);
+			String id = new ObjectId().toString();
+			location.setKode(id);
+			
+			//iteator for inserting food to the collection
+			for(int i = 0; i < listFoodName.length; i++) {
+				Food food = new Food(listFoodName[i], Integer.parseInt(listFoodPrice[i]), Integer.parseInt(listFoodQuant[i]),
+						listFoodDetail[i]);
+				
+				id = new ObjectId().toString();
+				foodId.add(id);
+				food.setKode(id);
+				foodCollection.insertOne(food);
+			}
+			
+			Restaurant restaurant = new Restaurant(fullName, location, telpNum, detail, foodId);
+			restaurant.setListFoodId(foodId);
+			id = new ObjectId().toString();
+			restaurant.setKode(id);
+			System.out.println(restaurant.getListFoodId().size());
+			restaurantCollection.insertOne(restaurant);			
+			System.out.println("data inserted");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
+	}
+    
 }

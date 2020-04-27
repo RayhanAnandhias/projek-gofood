@@ -6,7 +6,6 @@ public class Food {
 	private int price;
 	private int quantity;
 	private String detail;
-	//private List<Picture> picture;
 	
 	public Food() {
 	    super();
