@@ -218,4 +218,161 @@ public class MongoDbUtils {
 		return true;
 	}
     
+    public ArrayList<Restaurant> getRestaurant() throws IOException {		
+		ArrayList<Restaurant> resultList = new ArrayList<>();
+		FindIterable<Restaurant> restaurantIterable = restaurantCollection.find();
+		
+		for (Restaurant restaurant : restaurantIterable) {
+			System.out.println(restaurant);
+			resultList.add(restaurant);
+		}		
+		return resultList;
+	}
+    
+    public ArrayList<Restaurant> getRestaurantByCategory(String category, String value) throws IOException {		
+		ArrayList<Restaurant> resultList = new ArrayList<>();
+		FindIterable<Restaurant> restaurantIterable = null;
+		
+		switch(category) {
+			case "name":{
+				restaurantIterable = restaurantCollection.find(regex("name", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "telp_no":{
+				restaurantIterable = restaurantCollection.find(regex("telp_no", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "detail":{
+				restaurantIterable = restaurantCollection.find(regex("detail", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "street":{
+				restaurantIterable = restaurantCollection.find(regex("location.street", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "city":{
+				restaurantIterable = restaurantCollection.find(regex("location.city", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+		}
+		
+		for(Restaurant temp : restaurantIterable) {
+			resultList.add(temp);
+			System.out.println(temp);
+		}
+		
+		return resultList;
+	}
+    
+    public boolean updateRestaurant(String row, String fullName, String email, String telpNum, String platNum, String merk, String locationKode,
+    		String street, String city) {		
+		/*try {	
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("full_name", fullName));
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("email", email));
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("telp_no", telpNum));
+			Motor motor = new Motor(platNum, merk);
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("motor", motor));
+			Location location = new Location(street, city);
+			location.setKode(locationKode);
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("location", location));
+			System.out.println("data updated");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}*/
+		return true;
+	}
+    
+    public boolean deleteRestaurant(String row) {
+    	FindIterable<Restaurant> restaurantIterable = restaurantCollection.find();
+    	Restaurant restaurant = null;
+		for (Restaurant temp : restaurantIterable) {
+			if(temp.getKode().equals(row))
+				restaurant = temp;
+		}
+		int counter = 0;
+		FindIterable<Food> foodIterable = foodCollection.find();
+		List<String> idFood = restaurant.getListFoodId();
+		for(String id : idFood) {
+			for (Food temp : foodIterable) {
+				if(temp.getKode().equals(id)) {
+					counter++;
+					foodCollection.deleteOne(eq("kode", id));
+				}
+					
+			}
+		}
+    	
+		DeleteResult del = restaurantCollection.deleteOne(eq("kode", row));
+		System.out.println("del on Restaurant = " + del.getDeletedCount());
+		System.out.println("del on Food = " + counter);
+		return true;
+	}
+    
+    public ArrayList<Food> getFoodOnRestaurant(String row) throws IOException {		
+    	ArrayList<Food> resultList = new ArrayList<>();
+    	List<String> foodId = new ArrayList<>();
+		FindIterable<Restaurant> restaurantIterable = restaurantCollection.find();
+		
+		for (Restaurant restaurant : restaurantIterable) {
+			if(restaurant.getKode().equals(row)) {
+				foodId = restaurant.getListFoodId();
+				break;
+			}
+		}
+		FindIterable<Food> foodIterable = foodCollection.find();
+		for(String id : foodId) {
+			for(Food food : foodIterable) {
+				if(food.getKode().equals(id)) {
+					resultList.add(food);
+				}
+			}
+		}
+		return resultList;
+	}
+    
+    public boolean updateFoodOnRestaurant(String row, String fullName, String email, String telpNum, String platNum, String merk, String locationKode,
+    		String street, String city) {		
+		try {	
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("full_name", fullName));
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("email", email));
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("telp_no", telpNum));
+			Motor motor = new Motor(platNum, merk);
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("motor", motor));
+			Location location = new Location(street, city);
+			location.setKode(locationKode);
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("location", location));
+			System.out.println("data updated");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+    
+    public boolean deleteFoodOnRestaurant(String row) {
+    	FindIterable<Restaurant> restaurantIterable = restaurantCollection.find();
+    	Restaurant restaurant = null;
+		for (Restaurant temp : restaurantIterable) {
+			if(temp.getKode().equals(row))
+				restaurant = temp;
+		}
+		int counter = 0;
+		FindIterable<Food> foodIterable = foodCollection.find();
+		List<String> idFood = restaurant.getListFoodId();
+		for(String id : idFood) {
+			for (Food temp : foodIterable) {
+				if(temp.getKode().equals(id)) {
+					counter++;
+					foodCollection.deleteOne(eq("kode", id));
+				}
+					
+			}
+		}
+    	
+		DeleteResult del = restaurantCollection.deleteOne(eq("kode", row));
+		System.out.println("del on Restaurant = " + del.getDeletedCount());
+		System.out.println("del on Food = " + counter);
+		return true;
+	}
 }

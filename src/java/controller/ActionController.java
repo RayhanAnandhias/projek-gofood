@@ -16,8 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import model.Driver;
+import model.Food;
 import model.Location;
 import model.Motor;
+import model.Restaurant;
 
 /**
  *
@@ -25,6 +27,7 @@ import model.Motor;
  */
 public class ActionController extends HttpServlet {
 	private String vrow;
+	private String restaurantName;
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -103,8 +106,26 @@ public class ActionController extends HttpServlet {
         	RequestDispatcher rd = request.getRequestDispatcher("/ReadDriver.jsp");
 			rd.forward(request, response);
         }
+        else if("View Restaurant".equals(action)) {
+        	RequestDispatcher rd = request.getRequestDispatcher("/ReadRestaurant.jsp");
+			rd.forward(request, response);
+        }
+        else if("view food".equals(action)) {
+        	vrow = request.getParameter("kode");
+        	restaurantName = request.getParameter("name");
+        	
+        	request.setAttribute("restnameparam", restaurantName);
+        	RequestDispatcher rd = request.getRequestDispatcher("/ReadFood.jsp");
+			rd.forward(request, response);
+        }
         else if("Retrieve All Driver Data".equals(action)) {
         	showDriverData(request, response, mongodbUtils);
+        }
+        else if("Retrieve All Restaurant Data".equals(action)) {
+        	showRestaurantData(request, response, mongodbUtils);
+        }
+        else if("Retrieve All Food Data".equals(action)) {
+        	showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
         }
         else if("Search Driver by".equals(action)) {
         	try{ 
@@ -120,6 +141,20 @@ public class ActionController extends HttpServlet {
             	request.getRequestDispatcher("/ReadDriver.jsp").forward(request, response);
             } 
         }
+        else if("Search Restaurant by".equals(action)) {
+        	try{
+        		String category = request.getParameter("attribute rest");
+    	    	String boxValue = request.getParameter("search restaurant box");
+	    		List<Restaurant> listRestaurant = mongodbUtils.getRestaurantByCategory(category, boxValue);
+				request.setAttribute("dataList", listRestaurant);
+				request.setAttribute("sdbvalue", boxValue);
+				request.setAttribute("attributerest", category);
+				request.getRequestDispatcher("/ReadRestaurant.jsp").forward(request, response);
+            } 
+            catch(NullPointerException e){ 
+            	request.getRequestDispatcher("/ReadRestaurant.jsp").forward(request, response);
+            } 
+        }
         else if("delete driver".equals(action)) {
         	String row = request.getParameter("kode");
 			System.out.println("ROW DELETED = "+row);
@@ -127,6 +162,18 @@ public class ActionController extends HttpServlet {
 			boolean result = mongodbUtils.deleteDriver(row);
 			if(result) {
 				showDriverData(request, response, mongodbUtils);
+			}else {
+				RequestDispatcher rd = request.getRequestDispatcher("/FailedDelete.jsp");
+				rd.forward(request, response);
+			}
+        }
+        else if("delete restaurant".equals(action)) {
+        	String row = request.getParameter("kode");
+			System.out.println("ROW DELETED = "+row);
+			
+			boolean result = mongodbUtils.deleteRestaurant(row);
+			if(result) {
+				showRestaurantData(request, response, mongodbUtils);
 			}else {
 				RequestDispatcher rd = request.getRequestDispatcher("/FailedDelete.jsp");
 				rd.forward(request, response);
@@ -150,6 +197,9 @@ public class ActionController extends HttpServlet {
         	request.setAttribute("driver", driver);	
 			request.getRequestDispatcher("/UpdateDriver.jsp").forward(request, response);
         }
+        else if("update restaurant".equals(action)) {
+        	
+        }
         else if("AfterUpdateDriver".equals(action)) {
         	String fullName = request.getParameter("updatedfullname");
         	String email = request.getParameter("updatedemail");
@@ -168,6 +218,9 @@ public class ActionController extends HttpServlet {
 				RequestDispatcher rdUpdate = request.getRequestDispatcher("/FailedUpdate.jsp");
 				rdUpdate.forward(request, response);
 			}
+        }
+        else if("AfterUpdateRestaurant".equals(action)) {
+        	
         }
         else if("Back to Main Menu".equals(action)){
         	RequestDispatcher rd = request.getRequestDispatcher("/OperatorMenu.jsp");
@@ -196,4 +249,26 @@ public class ActionController extends HttpServlet {
 		}
     }
     
+    public void showRestaurantData(HttpServletRequest request, HttpServletResponse response,
+			MongoDbUtils mongodbUtils) {
+    	try {
+			List<Restaurant> listRestaurant = mongodbUtils.getRestaurant();
+			request.setAttribute("dataList", listRestaurant);
+			request.getRequestDispatcher("/ReadRestaurant.jsp").forward(request, response);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void showFoodOnRestaurantData(HttpServletRequest request, HttpServletResponse response,
+			MongoDbUtils mongodbUtils, String row) {
+    	try {
+			List<Food> listFood = mongodbUtils.getFoodOnRestaurant(row);
+			request.setAttribute("dataList", listFood);
+			request.setAttribute("restnameparam", restaurantName);
+			request.getRequestDispatcher("/ReadFood.jsp").forward(request, response);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
 }
