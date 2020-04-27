@@ -205,7 +205,6 @@ public class MongoDbUtils {
 			}
 			
 			Restaurant restaurant = new Restaurant(fullName, location, telpNum, detail, foodId);
-			restaurant.setListFoodId(foodId);
 			id = new ObjectId().toString();
 			restaurant.setKode(id);
 			System.out.println(restaurant.getListFoodId().size());
@@ -264,22 +263,20 @@ public class MongoDbUtils {
 		return resultList;
 	}
     
-    public boolean updateRestaurant(String row, String fullName, String email, String telpNum, String platNum, String merk, String locationKode,
-    		String street, String city) {		
-		/*try {	
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("full_name", fullName));
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("email", email));
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("telp_no", telpNum));
-			Motor motor = new Motor(platNum, merk);
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("motor", motor));
+    public boolean updateRestaurant(String row, String name, String locationKode, String street, String city, String telpNum, String detail) {		
+		try {	
+			restaurantCollection.updateOne(Filters.eq("kode", row), Updates.set("name", name));
+			restaurantCollection.updateOne(Filters.eq("kode", row), Updates.set("telp_no", telpNum));
+			restaurantCollection.updateOne(Filters.eq("kode", row), Updates.set("detail", detail));
+			
 			Location location = new Location(street, city);
 			location.setKode(locationKode);
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("location", location));
+			restaurantCollection.updateOne(Filters.eq("kode", row), Updates.set("location", location));
 			System.out.println("data updated");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
-		}*/
+		}
 		return true;
 	}
     
@@ -331,17 +328,12 @@ public class MongoDbUtils {
 		return resultList;
 	}
     
-    public boolean updateFoodOnRestaurant(String row, String fullName, String email, String telpNum, String platNum, String merk, String locationKode,
-    		String street, String city) {		
+    public boolean updateFoodOnRestaurant(String row, String name, int price, int quantity, String detail) {		
 		try {	
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("full_name", fullName));
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("email", email));
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("telp_no", telpNum));
-			Motor motor = new Motor(platNum, merk);
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("motor", motor));
-			Location location = new Location(street, city);
-			location.setKode(locationKode);
-			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("location", location));
+			foodCollection.updateOne(Filters.eq("kode", row), Updates.set("name", name));
+			foodCollection.updateOne(Filters.eq("kode", row), Updates.set("price", price));
+			foodCollection.updateOne(Filters.eq("kode", row), Updates.set("quantity", quantity));
+			foodCollection.updateOne(Filters.eq("kode", row), Updates.set("detail", detail));
 			System.out.println("data updated");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -350,29 +342,23 @@ public class MongoDbUtils {
 		return true;
 	}
     
-    public boolean deleteFoodOnRestaurant(String row) {
+    public boolean deleteFoodOnRestaurant(String restRow, String foodRow) {
     	FindIterable<Restaurant> restaurantIterable = restaurantCollection.find();
     	Restaurant restaurant = null;
 		for (Restaurant temp : restaurantIterable) {
-			if(temp.getKode().equals(row))
+			if(temp.getKode().equals(restRow))
 				restaurant = temp;
 		}
-		int counter = 0;
-		FindIterable<Food> foodIterable = foodCollection.find();
 		List<String> idFood = restaurant.getListFoodId();
-		for(String id : idFood) {
-			for (Food temp : foodIterable) {
-				if(temp.getKode().equals(id)) {
-					counter++;
-					foodCollection.deleteOne(eq("kode", id));
-				}
-					
-			}
+		if(idFood.size() > 1) {
+			DeleteResult del = foodCollection.deleteOne(eq("kode", foodRow));
+			System.out.println(idFood.size());
+			idFood.remove(foodRow);
+	    	System.out.println(idFood.size());
+	    	restaurantCollection.updateOne(Filters.eq("kode", restRow), Updates.set("listFoodId", idFood));
+			System.out.println("del on Food = " + del.getDeletedCount());
+			return true;
 		}
-    	
-		DeleteResult del = restaurantCollection.deleteOne(eq("kode", row));
-		System.out.println("del on Restaurant = " + del.getDeletedCount());
-		System.out.println("del on Food = " + counter);
-		return true;
+		return false;
 	}
 }

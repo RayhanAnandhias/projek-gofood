@@ -113,19 +113,20 @@ public class ActionController extends HttpServlet {
         else if("view food".equals(action)) {
         	vrow = request.getParameter("kode");
         	restaurantName = request.getParameter("name");
-        	
-        	request.setAttribute("restnameparam", restaurantName);
-        	RequestDispatcher rd = request.getRequestDispatcher("/ReadFood.jsp");
-			rd.forward(request, response);
+        	System.out.println(vrow + " " + restaurantName);
+        	showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
+        }
+        else if("view food from update".equals(action)) {
+        	//vrow = request.getParameter("kode");
+        	//restaurantName = request.getParameter("name");
+        	//System.out.println(vrow + " " + restaurantName);
+        	showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
         }
         else if("Retrieve All Driver Data".equals(action)) {
         	showDriverData(request, response, mongodbUtils);
         }
         else if("Retrieve All Restaurant Data".equals(action)) {
         	showRestaurantData(request, response, mongodbUtils);
-        }
-        else if("Retrieve All Food Data".equals(action)) {
-        	showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
         }
         else if("Search Driver by".equals(action)) {
         	try{ 
@@ -179,6 +180,18 @@ public class ActionController extends HttpServlet {
 				rd.forward(request, response);
 			}
         }
+        else if("delete food".equals(action)) {
+        	String row = request.getParameter("kode");
+			System.out.println("ROW DELETED = "+row);
+			
+			boolean result = mongodbUtils.deleteFoodOnRestaurant(vrow, row);
+			if(result) {
+				showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
+			}else {
+				RequestDispatcher rd = request.getRequestDispatcher("/FailedDelete.jsp");
+				rd.forward(request, response);
+			}
+        }
         else if("update driver".equals(action)) {
         	vrow = request.getParameter("kode");
         	String fullName = request.getParameter("fullname");
@@ -198,7 +211,32 @@ public class ActionController extends HttpServlet {
 			request.getRequestDispatcher("/UpdateDriver.jsp").forward(request, response);
         }
         else if("update restaurant".equals(action)) {
+        	vrow = request.getParameter("kode");
+        	String name = request.getParameter("name");
+        	String telpNum = request.getParameter("telpnum");
+        	String detail = request.getParameter("detail");
+        	String locationKode = request.getParameter("locationkode");
+        	String street = request.getParameter("street");
+        	String city = request.getParameter("city");
         	
+        	Location location = new Location(street, city);
+        	location.setKode(locationKode);
+        	
+        	Restaurant restaurant = new Restaurant(name, location, telpNum, detail, null);
+        	request.setAttribute("restaurant", restaurant);	
+			request.getRequestDispatcher("/UpdateRestaurant.jsp").forward(request, response);
+        }
+        else if("update food".equals(action)) {
+        	String foodrow = request.getParameter("kode");
+        	String name = request.getParameter("name");
+        	int price = Integer.parseInt(request.getParameter("price"));
+        	String detail = request.getParameter("detail");
+        	int quantity = Integer.parseInt(request.getParameter("quantity"));
+        	
+        	Food food = new Food(name, price, quantity, detail);
+        	food.setKode(foodrow);
+        	request.setAttribute("food", food);	
+			request.getRequestDispatcher("/UpdateFood.jsp").forward(request, response);
         }
         else if("AfterUpdateDriver".equals(action)) {
         	String fullName = request.getParameter("updatedfullname");
@@ -220,7 +258,39 @@ public class ActionController extends HttpServlet {
 			}
         }
         else if("AfterUpdateRestaurant".equals(action)) {
+        	String name = request.getParameter("updatedname");
+        	String locationKode = request.getParameter("locationkode");
+        	String street = request.getParameter("updatedstreet");
+        	String city = request.getParameter("updatedcity");
+        	String telpNum = request.getParameter("updatedtelpnum");
+        	String detail = request.getParameter("updateddetail");
         	
+        	
+        	System.out.println("ROW UPDATED = "+vrow);				
+			boolean resultUpdate = mongodbUtils.updateRestaurant(vrow, name, locationKode, street, city, telpNum, detail);
+			if(resultUpdate) {
+				showRestaurantData(request, response, mongodbUtils);
+			}else {
+				RequestDispatcher rdUpdate = request.getRequestDispatcher("/FailedUpdate.jsp");
+				rdUpdate.forward(request, response);
+			}
+        }
+        else if("AfterUpdateFood".equals(action)) {
+        	String row = request.getParameter("kode");
+        	String name = request.getParameter("updatedname");
+        	int price = Integer.parseInt(request.getParameter("updatedprice"));
+        	int quantity = Integer.parseInt(request.getParameter("updatedquantity"));
+        	String detail = request.getParameter("updateddetail");
+        	
+        	System.out.println("ROW UPDATED = "+row);				
+			boolean resultUpdate = mongodbUtils.updateFoodOnRestaurant(row, name, price, quantity, detail);
+			if(resultUpdate) {
+				restaurantName = name;
+	        	showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
+			}else {
+				RequestDispatcher rdUpdate = request.getRequestDispatcher("/FailedUpdate.jsp");
+				rdUpdate.forward(request, response);
+			}
         }
         else if("Back to Main Menu".equals(action)){
         	RequestDispatcher rd = request.getRequestDispatcher("/OperatorMenu.jsp");

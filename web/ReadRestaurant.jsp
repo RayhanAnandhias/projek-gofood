@@ -89,6 +89,7 @@
 				        <input type="hidden" name="street" value="${dataItem.getLocation().getStreet()}">
 				        <input type="hidden" name="city" value="${dataItem.getLocation().getCity()}">
 				        <input type="hidden" name="telpnum" value="${dataItem.getTelp_no()}">
+				        <input type="hidden" name="detail" value="${dataItem.getDetail()}">
 				     </form>
 			    </c:forEach>
 	        </table>

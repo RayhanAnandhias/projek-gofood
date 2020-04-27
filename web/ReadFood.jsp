@@ -22,7 +22,6 @@
 	            <h1 style="font-family: 'Comfortaa'">List of Food "${restname}"</h1>
 	            
 	            <form action="ActionController" method="post">
-					<input type="submit" name="action" value="Retrieve All Food Data" style="font-family: 'Comfortaa'"/>
 					<br><br>
 					
 				</form>
