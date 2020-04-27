@@ -20,6 +20,7 @@ import model.Food;
 import model.Location;
 import model.Motor;
 import model.Restaurant;
+import model.User;
 
 /**
  *
@@ -117,16 +118,20 @@ public class ActionController extends HttpServlet {
         	showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
         }
         else if("view food from update".equals(action)) {
-        	//vrow = request.getParameter("kode");
-        	//restaurantName = request.getParameter("name");
-        	//System.out.println(vrow + " " + restaurantName);
         	showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
+        }
+        else if("View User".equals(action)) {
+        	RequestDispatcher rd = request.getRequestDispatcher("/ReadUser.jsp");
+			rd.forward(request, response);
         }
         else if("Retrieve All Driver Data".equals(action)) {
         	showDriverData(request, response, mongodbUtils);
         }
         else if("Retrieve All Restaurant Data".equals(action)) {
         	showRestaurantData(request, response, mongodbUtils);
+        }
+        else if("Retrieve All User Data".equals(action)) {
+        	showUserData(request, response, mongodbUtils);
         }
         else if("Search Driver by".equals(action)) {
         	try{ 
@@ -154,6 +159,20 @@ public class ActionController extends HttpServlet {
             } 
             catch(NullPointerException e){ 
             	request.getRequestDispatcher("/ReadRestaurant.jsp").forward(request, response);
+            } 
+        }
+        else if("Search User by".equals(action)) {
+        	try{ 
+        		String category = request.getParameter("attribute user");
+    	    	String boxValue = request.getParameter("search user box");
+	    		List<User> listUser = mongodbUtils.getUserByCategory(category, boxValue);
+				request.setAttribute("dataList", listUser);
+				request.setAttribute("sdbvalue", boxValue);
+				request.setAttribute("attributeuser", category);
+				request.getRequestDispatcher("/ReadUser.jsp").forward(request, response);
+            } 
+            catch(NullPointerException e){ 
+            	request.getRequestDispatcher("/ReadUser.jsp").forward(request, response);
             } 
         }
         else if("delete driver".equals(action)) {
@@ -187,6 +206,18 @@ public class ActionController extends HttpServlet {
 			boolean result = mongodbUtils.deleteFoodOnRestaurant(vrow, row);
 			if(result) {
 				showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
+			}else {
+				RequestDispatcher rd = request.getRequestDispatcher("/FailedDelete.jsp");
+				rd.forward(request, response);
+			}
+        }
+        else if("delete user".equals(action)) {
+        	String row = request.getParameter("kode");
+			System.out.println("ROW DELETED = "+row);
+			
+			boolean result = mongodbUtils.deleteUser(row);
+			if(result) {
+				showUserData(request, response, mongodbUtils);
 			}else {
 				RequestDispatcher rd = request.getRequestDispatcher("/FailedDelete.jsp");
 				rd.forward(request, response);
@@ -237,6 +268,14 @@ public class ActionController extends HttpServlet {
         	food.setKode(foodrow);
         	request.setAttribute("food", food);	
 			request.getRequestDispatcher("/UpdateFood.jsp").forward(request, response);
+        }
+        else if("top up gopay".equals(action)) {
+        	vrow = request.getParameter("kode");
+        	int saldo = Integer.parseInt(request.getParameter("saldo_gopay"));
+        	
+        	User user = new User(null, null,null,null, saldo);
+        	request.setAttribute("user", user);	
+			request.getRequestDispatcher("/TopUpGopay.jsp").forward(request, response);
         }
         else if("AfterUpdateDriver".equals(action)) {
         	String fullName = request.getParameter("updatedfullname");
@@ -292,6 +331,18 @@ public class ActionController extends HttpServlet {
 				rdUpdate.forward(request, response);
 			}
         }
+        else if("AfterTopUp".equals(action)) {
+        	int saldo = Integer.parseInt(request.getParameter("updatedsaldo_gopay"));
+        	if(saldo >= 10000) {
+        		System.out.println("ROW UPDATED = "+vrow);				
+    			boolean resultUpdate = mongodbUtils.topUpGopay(vrow, saldo);
+    			if(resultUpdate) {
+    				showDriverData(request, response, mongodbUtils);
+    			}
+        	}
+        	RequestDispatcher rdUpdate = request.getRequestDispatcher("/FailedTopUp.jsp");
+			rdUpdate.forward(request, response);
+        }
         else if("Back to Main Menu".equals(action)){
         	RequestDispatcher rd = request.getRequestDispatcher("/OperatorMenu.jsp");
 			rd.forward(request, response);
@@ -337,6 +388,17 @@ public class ActionController extends HttpServlet {
 			request.setAttribute("dataList", listFood);
 			request.setAttribute("restnameparam", restaurantName);
 			request.getRequestDispatcher("/ReadFood.jsp").forward(request, response);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void showUserData(HttpServletRequest request, HttpServletResponse response,
+			MongoDbUtils mongodbUtils) {
+    	try {
+			List<User> listUser = mongodbUtils.getUser();
+			request.setAttribute("dataList", listUser);
+			request.getRequestDispatcher("/ReadUser.jsp").forward(request, response);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

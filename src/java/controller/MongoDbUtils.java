@@ -54,6 +54,7 @@ public class MongoDbUtils {
     MongoCollection<Driver> driverCollection;
     MongoCollection<Restaurant> restaurantCollection;
     MongoCollection<Food> foodCollection;
+    MongoCollection<User> userCollection;
     
     public MongoDbUtils() {
     	// Creating Credentials 
@@ -77,6 +78,7 @@ public class MongoDbUtils {
 		driverCollection = database.getCollection("driverCollection", Driver.class);
 		restaurantCollection = database.getCollection("restaurantCollection", Restaurant.class);
 		foodCollection = database.getCollection("foodCollection", Food.class);
+		userCollection = database.getCollection("userCollection", User.class);
     }
     
   //method untuk insert driver ke collections
@@ -360,5 +362,76 @@ public class MongoDbUtils {
 			return true;
 		}
 		return false;
+	}
+    
+    public ArrayList<User> getUser() throws IOException {		
+		ArrayList<User> resultList = new ArrayList<>();
+		FindIterable<User> userIterable = userCollection.find();
+		
+		for (User user : userIterable) {
+			System.out.println(user);
+			resultList.add(user);
+		}		
+		return resultList;
+	}
+    
+    public ArrayList<User> getUserByCategory(String category, String value) throws IOException {		
+		ArrayList<User> resultList = new ArrayList<>();
+		FindIterable<User> userIterable = null;
+		
+		switch(category) {
+			case "full_name":{
+				userIterable = userCollection.find(regex("full_name", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "email":{
+				userIterable = userCollection.find(regex("email", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "telp_no":{
+				userIterable = userCollection.find(regex("telp_no", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "street":{
+				userIterable = userCollection.find(regex("location.street", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "city":{
+				userIterable = userCollection.find(regex("location.city", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			
+		}
+		
+		for(User temp : userIterable) {
+			resultList.add(temp);
+			System.out.println(temp);
+		}
+		
+		return resultList;
+	}
+    
+    public boolean topUpGopay(String row, int saldo) {		
+		try {
+			FindIterable<User> userIterable = userCollection.find();
+			int saldoNow = saldo;
+			for (User user : userIterable) {
+				if(user.getKode().equals(row)) {
+					saldoNow+=user.getSaldo_gopay();
+				}
+			}
+			driverCollection.updateOne(Filters.eq("kode", row), Updates.set("saldo_gopay", saldoNow));
+			System.out.println("data updated");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+    
+    public boolean deleteUser(String row) {
+		DeleteResult del = userCollection.deleteOne(eq("kode", row));
+		System.out.println("del on User = " + del.getDeletedCount());
+		return true;
 	}
 }
