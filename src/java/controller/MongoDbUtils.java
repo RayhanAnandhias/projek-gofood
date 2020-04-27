@@ -5,10 +5,6 @@
  */
 package controller;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.client.MongoClients;
-import com.mongodb.Block;
-import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
@@ -21,10 +17,6 @@ import static com.mongodb.client.model.Updates.*;
 import static java.util.Arrays.asList;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-import com.mongodb.ServerAddress;
-import org.bson.Document;
-import java.util.Arrays;
-import com.mongodb.client.MongoCursor;
 import java.util.ArrayList;
 import java.io.IOException;
 import com.mongodb.MongoClient;
@@ -36,6 +28,8 @@ import model.Restaurant;
 import model.User;
 import model.Location;
 import astar.*;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -44,6 +38,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import model.Driver;
+import model.Pesanan;
 import org.bson.types.ObjectId;
 /**
  *
@@ -56,6 +52,8 @@ public class MongoDbUtils {
     private MongoCollection<Restaurant> restaurants;
     private MongoCollection<Food> foods;
     private MongoCollection<Location> locations;
+    private MongoCollection<Driver> drivers;
+    private MongoCollection<Pesanan> pesanan;
     //collection
     
     public MongoDbUtils() {
@@ -75,6 +73,8 @@ public class MongoDbUtils {
         restaurants = database.getCollection("restaurants", Restaurant.class);
         foods = database.getCollection("foods", Food.class);
         locations = database.getCollection("locations", Location.class);
+        drivers = database.getCollection("drivers", Driver.class);
+        pesanan = database.getCollection("pesanan", Pesanan.class);
     }
     
     public boolean insertDataUser(String name, String pwd, String email, String noTelp, int saldo) {
@@ -232,13 +232,71 @@ public class MongoDbUtils {
     }
     
     
-//    public boolean createPesanan(String userId, String restoId, String driverId, ) {
-//        try {
-//            
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
+    public boolean createPesanan(String userId, String restoId, String locId, List<String> listOrder, boolean method, int hargaMakanan) {
+        Pesanan orders;
+        Driver driver;
+        User user;
+        Restaurant resto;
+        int ongkir;
+        double jarak;
+        try {
+            user = users.find(eq("kode", userId)).first();
+            resto = restaurants.find(eq("kode", restoId)).first();
+            driver = chooseDriver(restoId);
+            jarak = HaversineScorer.computeCost(user.getLocation(), resto.getLocation());
+            ongkir = (int)jarak*2000;
+            orders = new Pesanan(userId, restoId, driver.getKode(), listOrder, method, ongkir, ongkir + hargaMakanan);
+            pesanan.insertOne(orders);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public Driver chooseDriver(String restoLocId) {
+        Driver idDriver = null;
+        Location restoLocation;
+        List<Driver> lsDriver;
+        try {
+            restoLocation = locations.find(eq("kode", restoLocId)).first();
+            lsDriver = getAllDriver();
+            Collections.sort(lsDriver, new Comparator<Driver>() {
+                @Override
+                public int compare(Driver t, Driver t1) {
+                    Double tScore = HaversineScorer.computeCost(t.getLocation(), restoLocation);
+                    Double t1Score = HaversineScorer.computeCost(t1.getLocation(), restoLocation);
+                    if(tScore > t1Score) {
+                        return 1;
+                    } else if(tScore < t1Score) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+            for (Driver driver : lsDriver) {
+                idDriver = driver;
+                break;
+            }
+            return idDriver;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public List<Driver> getAllDriver() {
+        List<Driver> lsDriver = new ArrayList<Driver>();
+        try {
+            FindIterable<Driver> drvIterable = drivers.find();
+            for (Driver driver : drvIterable) {
+                lsDriver.add(driver);
+            }
+            return lsDriver;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
