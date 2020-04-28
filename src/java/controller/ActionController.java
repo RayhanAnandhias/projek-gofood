@@ -59,6 +59,11 @@ public class ActionController extends HttpServlet {
                 .forward(request, response);
             
         }
+        else if(action.equals("operator")) {
+            request.getRequestDispatcher("/OperatorMenu.jsp")
+                .forward(request, response);
+            
+        }
         else if(action.equals("insertUser")) {
             String name = request.getParameter("name");
             String email = request.getParameter("email");
