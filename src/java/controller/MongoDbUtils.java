@@ -94,7 +94,9 @@ public class MongoDbUtils {
         Location loc;
         Random rn = new Random();
         try {	
-                loc = locations.find(eq("kode", Integer.toString(rn.nextInt(5) + 1))).first();
+                int max = 5;
+                int min = 1;
+                loc = locations.find(eq("kode", Integer.toString(rn.nextInt((max-min) + 1) + min))).first();
                 user = users.find(eq("email", email)).first();
                 if(user == null) {
                     user = new User(name, email, pwd, noTelp, loc, saldo);	
@@ -219,7 +221,9 @@ public class MongoDbUtils {
     
     
     public boolean insertLocData() {
+        Location checker;
         try {
+            
             Set<Location> loc = new LinkedHashSet<>();
             loc.add(new Location("1", "Acton Town", 51.5028, -0.2801));
             loc.add(new Location("2", "Aldgate", 51.5143, -0.0755));
@@ -232,8 +236,13 @@ public class MongoDbUtils {
             loc.add(new Location("9", "Arnos Grove", 51.6164, -0.1331));
             loc.add(new Location("10", "Arsenal", 51.5586, -0.1059));
             for (Location location : loc) {
-                System.out.println(location.getKode() + "," + location.getStreet());
-                locations.insertOne(location);
+                //System.out.println(location.getKode() + "," + location.getStreet());
+                checker = locations.find(eq("kode", location.getKode())).first();
+                if(checker != null) {
+                    continue;
+                } else {
+                    locations.insertOne(location);
+                }
             }
             return true;
         } catch (Exception e) {
@@ -317,7 +326,9 @@ public class MongoDbUtils {
 		try {
 			Motor motor = new Motor(platNum, merk);
 			Random random = new Random();
-			Location location = locations.find(eq("kode", Integer.toString(random.nextInt(5) + 6))).first();
+                        int max = 8;
+                        int min = 6;
+			Location location = locations.find(eq("kode", Integer.toString(random.nextInt((max-min) + 1) + min))).first();
 			
 			Driver driver = new Driver(fullName, email, telpNum, motor, location);	
 			
@@ -415,7 +426,9 @@ public class MongoDbUtils {
 			
 			//set var location and set the value
 			Random random = new Random();
-			Location location = locations.find(eq("kode", Integer.toString(random.nextInt(5) + 6))).first();
+                        int max = 10;
+                        int min = 9;
+			Location location = locations.find(eq("kode", Integer.toString(random.nextInt((max-min) + 1) + min))).first();
 			String id = null;
 			
 			//iteator for inserting food to the collection
@@ -452,7 +465,18 @@ public class MongoDbUtils {
 			resultList.add(restaurant);
 		}		
 		return resultList;
-	}
+    }
+    
+    public ArrayList<Food> getFood() throws IOException {		
+		ArrayList<Food> resultList = new ArrayList<>();
+		FindIterable<Food> foodIterable = foods.find();
+		
+		for (Food food : foodIterable) {
+			System.out.println(food);
+			resultList.add(food);
+		}		
+		return resultList;
+    }
     
     public ArrayList<Restaurant> getRestaurantByCategory(String category, String value) throws IOException {		
 		ArrayList<Restaurant> resultList = new ArrayList<>();
@@ -482,6 +506,29 @@ public class MongoDbUtils {
 		}
 		
 		for(Restaurant temp : restaurantIterable) {
+			resultList.add(temp);
+			System.out.println(temp);
+		}
+		
+		return resultList;
+	}
+    
+    public ArrayList<Food> getFoodByCategory(String category, String value) throws IOException {		
+		ArrayList<Food> resultList = new ArrayList<>();
+		FindIterable<Food> foodIterable = null;
+		
+		switch(category) {
+			case "name":{
+				foodIterable = foods.find(regex("name", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "detail":{
+				foodIterable = foods.find(regex("detail", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+		}
+		
+		for(Food temp : foodIterable) {
 			resultList.add(temp);
 			System.out.println(temp);
 		}
@@ -549,7 +596,16 @@ public class MongoDbUtils {
 			}
 		}
 		return resultList;
-	}
+    }
+    
+    public ArrayList<Restaurant> getRestaurantOnFood(String rowFood) throws IOException {
+        ArrayList<Restaurant> resultList = new ArrayList<Restaurant>();
+        FindIterable<Restaurant> restoIterable = restaurants.find(in("listFoodId", rowFood));
+        for (Restaurant restaurant : restoIterable) {
+            resultList.add(restaurant);
+        }
+        return resultList;
+    }
     
     public boolean updateFoodOnRestaurant(String row, String name, int price, int quantity, String detail) {		
 		try {	

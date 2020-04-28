@@ -24,6 +24,8 @@ import model.*;
 public class ActionController extends HttpServlet {
     private String vrow;
     private String restaurantName;
+    private String vrowf;
+    private String foodName;
     boolean locationHasBeenInserted = false;
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -33,6 +35,8 @@ public class ActionController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
+    
     @Override
     protected void doPost(HttpServletRequest request, 
             HttpServletResponse response)
@@ -133,13 +137,14 @@ public class ActionController extends HttpServlet {
             request.getRequestDispatcher("/searchResto.jsp")
                 .forward(request, response);
         }
-        else if(action.equals("searchFood")) {
+        else if(action.equals("Search Food")) {
+            request.getRequestDispatcher("/searchFood.jsp")
+                .forward(request, response);
+        }
+        else if(action.equals("Create Order")) {
             
         }
-        else if(action.equals("createOrder")) {
-            
-        }
-        else if(action.equals("seeOrder")) {
+        else if(action.equals("See Order")) {
             
         }
         else if("Back to Main menu".equals(action)){
@@ -168,6 +173,30 @@ public class ActionController extends HttpServlet {
             catch(NullPointerException e){ 
             	request.getRequestDispatcher("/searchResto.jsp").forward(request, response);
             } 
+        }
+        else if("Search food By".equals(action)) {
+        	try{
+        		String category = request.getParameter("attribute rest");
+    	    	String boxValue = request.getParameter("search food box");
+                    System.out.println(category + " " + boxValue);
+	    		List<Food> listFood = mongodbUtils.getFoodByCategory(category, boxValue);
+                        request.setAttribute("dataList", listFood);
+                        request.setAttribute("sdbvalue", boxValue);
+                        request.setAttribute("attributerest", category);
+                        request.getRequestDispatcher("/searchFood.jsp").forward(request, response);
+            } 
+            catch(NullPointerException e){ 
+            	request.getRequestDispatcher("/searchFood.jsp").forward(request, response);
+            } 
+        }
+        else if("food available at".equals(action)) {
+            vrowf = request.getParameter("kode");
+            foodName = request.getParameter("name");
+            System.out.println(vrowf + " " + foodName);
+            showRestoOnFoodDataUser(request, response, mongodbUtils, vrowf);
+        }
+        else if("Retrieve All Food data".equals(action)) {
+            showFoodDataUser(request, response, mongodbUtils);
         }
         
         
@@ -551,6 +580,29 @@ public class ActionController extends HttpServlet {
 			request.setAttribute("dataList", listFood);
 			request.setAttribute("restnameparam", restaurantName);
 			request.getRequestDispatcher("/ReadFoodUser.jsp").forward(request, response);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void showRestoOnFoodDataUser(HttpServletRequest request, HttpServletResponse response,
+			MongoDbUtils mongodbUtils, String row) {
+    	try {
+			List<Restaurant> listRestaurant = mongodbUtils.getRestaurantOnFood(row);
+			request.setAttribute("dataList", listRestaurant);
+			request.setAttribute("foodnameparam", foodName);
+			request.getRequestDispatcher("/ReadRestaurantUser.jsp").forward(request, response);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void showFoodDataUser(HttpServletRequest request, HttpServletResponse response,
+			MongoDbUtils mongodbUtils) {
+    	try {
+			List<Food> listRestaurant = mongodbUtils.getFood();
+			request.setAttribute("dataList", listRestaurant);
+			request.getRequestDispatcher("/searchFood.jsp").forward(request, response);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
