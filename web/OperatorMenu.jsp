@@ -16,6 +16,7 @@
 				<input type="submit" name="action" value="View Driver" style="font-family: 'Comfortaa'">
 				<input type="submit" name="action" value="View Restaurant" style="font-family: 'Comfortaa'">
 				<input type="submit" name="action" value="View User" style="font-family: 'Comfortaa'">
+				<input type="submit" name="action" value="View Pesanan" style="font-family: 'Comfortaa'">
         	</form>
 		</div>
 	</body>

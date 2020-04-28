@@ -687,40 +687,49 @@ public class MongoDbUtils {
 		}		
 		return resultList;
 	}
-    /*
+    
     public ArrayList<Pesanan> getPesananByCategory(String category, String value) throws IOException {		
 		ArrayList<Pesanan> resultList = new ArrayList<>();
 		FindIterable<Pesanan> pesananIterable = null;
 		
 		switch(category) {
+			case "kode":{
+				pesananIterable = pesanan.find(regex("kode", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
 			case "user_id":{
-				pesananIterable = userCollection.find(regex("full_name", ".*" + Pattern.quote(value) + ".*"));
+				pesananIterable = pesanan.find(regex("user_id", ".*" + Pattern.quote(value) + ".*"));
 				break;
 			}
 			case "restaurant_id":{
-				pesananIterable = userCollection.find(regex("email", ".*" + Pattern.quote(value) + ".*"));
+				pesananIterable = pesanan.find(regex("restaurant_id", ".*" + Pattern.quote(value) + ".*"));
 				break;
 			}
 			case "driver_id":{
-				pesananIterable = userCollection.find(regex("telp_no", ".*" + Pattern.quote(value) + ".*"));
+				pesananIterable = pesanan.find(regex("driver_id", ".*" + Pattern.quote(value) + ".*"));
 				break;
 			}
-			case "street":{
-				pesananIterable = userCollection.find(regex("location.street", ".*" + Pattern.quote(value) + ".*"));
+			case "pesanan":{
+				pesananIterable = pesanan.find(regex("pesanan", ".*" + Pattern.quote(value) + ".*"));
 				break;
 			}
-			case "city":{
-				pesananIterable = userCollection.find(regex("location.city", ".*" + Pattern.quote(value) + ".*"));
+			case "payment_method":{
+				if(value == "gopay") {
+					pesananIterable = pesanan.find(regex("payment_method", ".*" + Pattern.quote(Boolean.toString(true)) + ".*"));
+				}
+				else if(value == "cash") {
+					pesananIterable = pesanan.find(regex("payment_method", ".*" + Pattern.quote(Boolean.toString(false)) + ".*"));
+				}
 				break;
 			}
 			
 		}
 		
-		for(User temp : userIterable) {
+		for(Pesanan temp : pesananIterable) {
 			resultList.add(temp);
 			System.out.println(temp);
 		}
 		
 		return resultList;
-	}*/
+	}
 }

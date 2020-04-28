@@ -31,6 +31,7 @@ import model.User;
 public class ActionController extends HttpServlet {
 	private String vrow;
 	private String restaurantName;
+	boolean locationHasBeenInserted = false;
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -47,7 +48,11 @@ public class ActionController extends HttpServlet {
         String action = request.getParameter("action");
         System.out.println("ACTION = "+action);
         MongoDbUtils mongodbUtils = new MongoDbUtils();
-        mongodbUtils.insertLocData();
+        if(!locationHasBeenInserted) {
+        	mongodbUtils.insertLocData();
+        	locationHasBeenInserted = true;
+        }
+        		
 		
 		//user feature
 		if(action.equals("Sign Up")) {
@@ -232,8 +237,16 @@ public class ActionController extends HttpServlet {
         }
         else if("Search Pesanan by".equals(action)) {
         	try{ 
+        		String category = request.getParameter("attribute pesanan");
+    	    	String boxValue = request.getParameter("search pesanan box");
+	    		List<Pesanan> listUser = mongodbUtils.getPesananByCategory(category, boxValue);
+				request.setAttribute("dataList", listUser);
+				request.setAttribute("sdbvalue", boxValue);
+				request.setAttribute("attributepesanan", category);
+				request.getRequestDispatcher("/ReadPesanan.jsp").forward(request, response);
             } 
             catch(NullPointerException e){ 
+            	request.getRequestDispatcher("/ReadPesanan.jsp").forward(request, response);
             } 
         }
         else if("delete driver".equals(action)) {
@@ -453,7 +466,7 @@ public class ActionController extends HttpServlet {
     	try {
 			List<Pesanan> listPesanan = mongodbUtils.getPesanan();
 			request.setAttribute("dataList", listPesanan);
-			request.getRequestDispatcher("/ReadUser.jsp").forward(request, response);
+			request.getRequestDispatcher("/ReadPesanan.jsp").forward(request, response);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
