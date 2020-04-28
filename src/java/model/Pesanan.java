@@ -8,7 +8,6 @@ public class Pesanan {
 	private String restaurant_id;
 	private String driver_id;
 	private List<String> pesanan;
-	private Location alamat_kirim;
 	private boolean payment_method;
 	private int ongkir;
 	private int total_cost;
@@ -19,7 +18,7 @@ public class Pesanan {
 	
 	public Pesanan(String user_id, String restaurant_id,
 			String driver_id, List<String> pesanan,
-			Location location, boolean payment_method,
+			boolean payment_method,
 			int ongkir, int total_cost) {
 		super();
 		
@@ -27,7 +26,6 @@ public class Pesanan {
 		this.restaurant_id = restaurant_id;
 		this.driver_id = driver_id;
 		this.pesanan = pesanan;
-		this.alamat_kirim = location;
 		this.payment_method = payment_method;
 		this.ongkir = ongkir;
 		this.total_cost = total_cost;
@@ -71,14 +69,6 @@ public class Pesanan {
 	
 	public void setPesanan(List<String> pesanan) {
 		this.pesanan = pesanan;
-	}
-	
-	public Location getAlamatKirim() {
-		return this.alamat_kirim;
-	}
-	
-	public void setAlamatKirim(Location alamat_kirim) {
-		this.alamat_kirim = alamat_kirim;
 	}
 	
 	public boolean getPaymentMethod() {

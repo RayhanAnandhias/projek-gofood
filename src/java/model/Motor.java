@@ -1,7 +1,6 @@
 package model;
 
 public class Motor {
-	private String kode;
 	private String no_plat;
 	private String merk;
 	

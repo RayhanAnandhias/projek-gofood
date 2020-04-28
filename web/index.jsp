@@ -17,6 +17,7 @@
         <form action="ActionController" method="post">
             <input type="submit" name="action" value="Sign Up">
             <input type="submit" name="action" value="Sign In">
+            <input type="submit" name="action" value="InsertLoc">
         </form>
     </body>
 </html>

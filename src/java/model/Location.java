@@ -1,41 +1,60 @@
 package model;
 
+import java.util.StringJoiner;
+
 public class Location {
 	private String kode;
-	private String street;
-	private String city;
+    private String street;
+    private double latitude;
+    private double longitude;
 	
 	public Location() {
 	    super();
 	}
 	
-	public Location(String street, String city) {
-		super();
-		this.street = street;
-		this.city = city;
-	}
-	
-	public final String getKode() {
+	public Location(String id, String name, double latitude, double longitude) {
+        super();
+        this.kode = id;
+        this.street = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public final String getKode() {
         return kode;
     }
 
     public final void setKode(String kode) {
         this.kode = kode;
     }
-	
-	public String getStreet() {
-		return this.street;
-	}
-	
-	public void setStreet(String street) {
-		this.street = street;
-	}
-	
-	public String getCity() {
-		return this.city;
-	}
-	
-	public void setCity(String city) {
-		this.city = city;
-	}
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+    
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Location.class.getSimpleName() + "[", "]").add("id='" + kode + "'")
+            .add("name='" + street + "'").add("latitude=" + latitude).add("longitude=" + longitude).toString();
+    }
 }
