@@ -14,14 +14,6 @@ public class Motor {
 		this.merk = merk;
 	}
 	
-	public final String getKode() {
-        return kode;
-    }
-
-    public final void setKode(String kode) {
-        this.kode = kode;
-    }
-	
 	public String getNo_Plat() {
 		return this.no_plat;
 	}

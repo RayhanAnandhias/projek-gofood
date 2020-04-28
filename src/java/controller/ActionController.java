@@ -26,6 +26,7 @@ import model.User;
 /**
  *
  * @author rayhan
+ * @author Ananda Bayu
  */
 public class ActionController extends HttpServlet {
 	private String vrow;
@@ -46,6 +47,7 @@ public class ActionController extends HttpServlet {
         String action = request.getParameter("action");
         System.out.println("ACTION = "+action);
         MongoDbUtils mongodbUtils = new MongoDbUtils();
+        mongodbUtils.insertLocData();
 		
 		//user feature
 		if(action.equals("Sign Up")) {
@@ -109,10 +111,8 @@ public class ActionController extends HttpServlet {
 			String telpNum = request.getParameter("telpnum");
 			String platNum = request.getParameter("platnum");
 			String merk = request.getParameter("merk");	
-			String street = request.getParameter("street");
-			String city = request.getParameter("city");
 			
-			boolean result = mongodbUtils.insertDriver(fullName, email, telpNum, platNum, merk, street, city);
+			boolean result = mongodbUtils.insertDriver(fullName, email, telpNum, platNum, merk);
 			
 			if(result) {
 				RequestDispatcher rd = request.getRequestDispatcher("/SuccessInsert.jsp");
@@ -126,8 +126,6 @@ public class ActionController extends HttpServlet {
         else if("RegRest".equals(action)) {
         	try{ 
         		String fullName = request.getParameter("name");
-            	String street = request.getParameter("street");
-    			String city = request.getParameter("city");
     			String telpNum = request.getParameter("telpnum");
     			String detail = request.getParameter("detail");
     			
@@ -136,8 +134,7 @@ public class ActionController extends HttpServlet {
     			String foodQuantity[] = request.getParameterValues("foodquant");
     			String foodDetail[] = request.getParameterValues("fooddetail");
     			
-    			boolean result = mongodbUtils.insertRestaurant(fullName, street, city, telpNum, detail, foodName, foodPrice,
-    					foodQuantity, foodDetail);
+    			boolean result = mongodbUtils.insertRestaurant(fullName, telpNum, detail, foodName, foodPrice, foodQuantity, foodDetail);
     			
     			if(result) {
     				RequestDispatcher rd = request.getRequestDispatcher("/SuccessInsert.jsp");
@@ -294,14 +291,8 @@ public class ActionController extends HttpServlet {
         	String telpNum = request.getParameter("telpnum");
         	String numPlat = request.getParameter("numplat");
         	String merk = request.getParameter("merk");
-        	String locationKode = request.getParameter("locationkode");
-        	String street = request.getParameter("street");
-        	String city = request.getParameter("city");
         	
-        	Location location = new Location(street, city);
-        	location.setKode(locationKode);
-        	
-        	Driver driver = new Driver(fullName, email, telpNum, new Motor(numPlat, merk), location);
+        	Driver driver = new Driver(fullName, email, telpNum, new Motor(numPlat, merk), null);
         	request.setAttribute("driver", driver);	
 			request.getRequestDispatcher("/UpdateDriver.jsp").forward(request, response);
         }
@@ -310,14 +301,8 @@ public class ActionController extends HttpServlet {
         	String name = request.getParameter("name");
         	String telpNum = request.getParameter("telpnum");
         	String detail = request.getParameter("detail");
-        	String locationKode = request.getParameter("locationkode");
-        	String street = request.getParameter("street");
-        	String city = request.getParameter("city");
         	
-        	Location location = new Location(street, city);
-        	location.setKode(locationKode);
-        	
-        	Restaurant restaurant = new Restaurant(name, location, telpNum, detail, null);
+        	Restaurant restaurant = new Restaurant(name, null, telpNum, detail, null);
         	request.setAttribute("restaurant", restaurant);	
 			request.getRequestDispatcher("/UpdateRestaurant.jsp").forward(request, response);
         }
@@ -337,7 +322,7 @@ public class ActionController extends HttpServlet {
         	vrow = request.getParameter("kode");
         	int saldo = Integer.parseInt(request.getParameter("saldo_gopay"));
         	
-        	User user = new User(null, null,null,null, saldo);
+        	User user = new User(null, null,null,null,null, saldo);
         	request.setAttribute("user", user);	
 			request.getRequestDispatcher("/TopUpGopay.jsp").forward(request, response);
         }
@@ -347,12 +332,9 @@ public class ActionController extends HttpServlet {
         	String telpNum = request.getParameter("updatedtelpnum");
         	String numPlat = request.getParameter("updatedplatnum");
         	String merk = request.getParameter("updatedmerk");
-        	String locationKode = request.getParameter("locationkode");
-        	String street = request.getParameter("updatedstreet");
-        	String city = request.getParameter("updatedcity");
         	
         	System.out.println("ROW UPDATED = "+vrow);				
-			boolean resultUpdate = mongodbUtils.updateDriver(vrow, fullName, email, telpNum, numPlat, merk, locationKode, street, city);
+			boolean resultUpdate = mongodbUtils.updateDriver(vrow, fullName, email, telpNum, numPlat, merk);
 			if(resultUpdate) {
 				showDriverData(request, response, mongodbUtils);
 			}else {
@@ -362,15 +344,11 @@ public class ActionController extends HttpServlet {
         }
         else if("AfterUpdateRestaurant".equals(action)) {
         	String name = request.getParameter("updatedname");
-        	String locationKode = request.getParameter("locationkode");
-        	String street = request.getParameter("updatedstreet");
-        	String city = request.getParameter("updatedcity");
         	String telpNum = request.getParameter("updatedtelpnum");
         	String detail = request.getParameter("updateddetail");
         	
-        	
         	System.out.println("ROW UPDATED = "+vrow);				
-			boolean resultUpdate = mongodbUtils.updateRestaurant(vrow, name, locationKode, street, city, telpNum, detail);
+			boolean resultUpdate = mongodbUtils.updateRestaurant(vrow, name, telpNum, detail);
 			if(resultUpdate) {
 				showRestaurantData(request, response, mongodbUtils);
 			}else {
@@ -396,20 +374,23 @@ public class ActionController extends HttpServlet {
 			}
         }
         else if("AfterTopUp".equals(action)) {
-        	int saldo = Integer.parseInt(request.getParameter("updatedsaldo_gopay"));
+        	int saldo = Integer.parseInt(request.getParameter("topupval"));
         	if(saldo >= 10000) {
         		System.out.println("ROW UPDATED = "+vrow);				
     			boolean resultUpdate = mongodbUtils.topUpGopay(vrow, saldo);
     			if(resultUpdate) {
-    				showDriverData(request, response, mongodbUtils);
+    				showUserData(request, response, mongodbUtils);
     			}
         	}
-        	RequestDispatcher rdUpdate = request.getRequestDispatcher("/FailedTopUp.jsp");
-			rdUpdate.forward(request, response);
+        	else {
+        		RequestDispatcher rdUpdate = request.getRequestDispatcher("/FailedTopUp.jsp");
+    			rdUpdate.forward(request, response);
+        	}
         }
         else if("Back to Main Menu".equals(action)){
         	RequestDispatcher rd = request.getRequestDispatcher("/OperatorMenu.jsp");
 			rd.forward(request, response);
+        }
     }
 
     /**

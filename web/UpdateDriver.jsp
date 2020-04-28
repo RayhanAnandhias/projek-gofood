@@ -21,10 +21,6 @@
 		<span style="margin-left:35em">Motor </span><BR>
 		<span style="margin-left:36em">Plat Number </span> <span style="margin-left:3em"><input type="text" name="updatedplatnum" value="${driver.getMotor().getNo_Plat()}" style="font-family: 'Comfortaa'"></span><BR><BR>
 		<span style="margin-left:36em">Merk </span> <span style="margin-left:6.8em"><input type="text" name="updatedmerk" value="${driver.getMotor().getMerk()}" style="font-family: 'Comfortaa'"></span><BR><BR>
-		<span style="margin-left:35em">Location </span><BR>
-		<input type="hidden" name="locationkode" value="${driver.getLocation().getKode()}">
-		<span style="margin-left:36em">Street </span> <span style="margin-left:6.2em"><input type="text" name="updatedstreet" value="${driver.getLocation().getStreet()}" style="font-family: 'Comfortaa'"></span><BR><BR>
-		<span style="margin-left:36em">City </span> <span style="margin-left:7.3em"><input type="text" name="updatedcity" value="${driver.getLocation().getCity()}" style="font-family: 'Comfortaa'"></span><BR><BR>
 		
 		<span style="margin-left:60em">
 			<input type="hidden" name="action" value="AfterUpdateDriver">

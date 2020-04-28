@@ -16,9 +16,6 @@
 	
 	<form action="ActionController" method="post" style="font-family: 'Comfortaa'">
 		<span style="margin-left:35em">Name </span> <span style="margin-left:7.5em"><input type="text" name="name" style="font-family: 'Comfortaa'" autocomplete="on"></span> <BR><BR>
-		<span style="margin-left:35em">Location </span><BR>
-		<span style="margin-left:36em">Street </span> <span style="margin-left:6.4em"><input type="text" name="street" style="font-family: 'Comfortaa'"></span><BR><BR>
-		<span style="margin-left:36em">City </span> <span style="margin-left:7.4em"><input type="text" name="city" style="font-family: 'Comfortaa'"></span><BR><BR>
 		<span style="margin-left:35em">Telephone Number </span> <span style="margin-left:0.7em"><input type="text" name="telpnum" style="font-family: 'Comfortaa'"></span><BR><BR>
 		<span style="margin-left:35em">Detail </span> <span style="margin-left:7.6em"><input type="text" name="detail" style="font-family: 'Comfortaa'"></span><BR><BR>
 		

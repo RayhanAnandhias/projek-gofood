@@ -16,9 +16,6 @@
 	
 	<form action="ActionController" method="post" style="font-family: 'Comfortaa'">
 		<span style="margin-left:35em">Name </span> <span style="margin-left:5.3em"><input type="text" name="updatedname" value="${restaurant.getName()}" style="font-family: 'Comfortaa'"></span> <BR><BR>
-		<input type="hidden" name="locationkode" value="${restaurant.getLocation().getKode()}">
-		<span style="margin-left:36em">Street </span> <span style="margin-left:6.2em"><input type="text" name="updatedstreet" value="${restaurant.getLocation().getStreet()}" style="font-family: 'Comfortaa'"></span><BR><BR>
-		<span style="margin-left:36em">City </span> <span style="margin-left:7.3em"><input type="text" name="updatedcity" value="${restaurant.getLocation().getCity()}" style="font-family: 'Comfortaa'"></span><BR><BR>
 		<span style="margin-left:35em">Telephone Number </span> <span style="margin-left:0.7em"><input type="text" name="updatedtelpnum" value="${restaurant.getTelp_no()}" style="font-family: 'Comfortaa'"></span><BR><BR>
 		<span style="margin-left:36em">Detail </span> <span style="margin-left:3em"><input type="text" name="updateddetail" value="${restaurant.getDetail()}" style="font-family: 'Comfortaa'"></span><BR><BR>
 		

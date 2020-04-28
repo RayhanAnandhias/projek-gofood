@@ -63,8 +63,6 @@
 						<label for="merk" style="font-family: 'Comfortaa'">Merk</label><span style="margin-left:1em"></span>
 					<input type="radio" id="street" name="attribute driver" value="street">
 						<label for="street" style="font-family: 'Comfortaa'">Street</label><span style="margin-left:1em"></span>
-					<input type="radio" id="city" name="attribute driver" value="city">
-						<label for="city" style="font-family: 'Comfortaa'">City</label><span style="margin-left:1em"></span>
 					
 					<br><br>
 					
@@ -85,7 +83,7 @@
 				            <td>${dataItem.getEmail()}</td>
 				            <td>${dataItem.getTelp_no()}</td>
 				            <td>${dataItem.getMotor().getNo_Plat()} - ${dataItem.getMotor().getMerk()}</td>
-				            <td>${dataItem.getLocation().getStreet()} - ${dataItem.getLocation().getCity()}</td>
+				            <td>${dataItem.getLocation().getStreet()}</td>
 				            <td><input type="submit" name="action" value="update driver" style="font-family: 'Comfortaa'"></td>
 				        	<td><input type="submit" name="action" value="delete driver" style="font-family: 'Comfortaa'"></td>
 				        </tr>
@@ -95,9 +93,6 @@
 				        <input type="hidden" name="telpnum" value="${dataItem.getTelp_no()}">
 				        <input type="hidden" name="numplat" value="${dataItem.getMotor().getNo_Plat()}">
 				        <input type="hidden" name="merk" value="${dataItem.getMotor().getMerk()}">
-				        <input type="hidden" name="locationkode" value="${dataItem.getLocation().getKode()}">
-				        <input type="hidden" name="street" value="${dataItem.getLocation().getStreet()}">
-				        <input type="hidden" name="city" value="${dataItem.getLocation().getCity()}">
 				     </form>
 			    </c:forEach>
 	        </table>

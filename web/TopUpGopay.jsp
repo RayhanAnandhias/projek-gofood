@@ -21,21 +21,12 @@
 		<span style="margin-left:35em">Your Balance </span> 
 		<span style="margin-left:5.3em"><fmt:setLocale value = "id_ID"/> <fmt:formatNumber value = "${user.getSaldo_gopay()}" type = "currency"/></span> <BR><BR>
 		<span style="margin-left:35em">Minimum Top Up : <fmt:setLocale value = "id_ID"/> <fmt:formatNumber value = "10000" type = "currency"/></span> <BR><BR>
-		<span style="margin-left:35em"><input type="text" name="topupval" style="font-family: 'Comfortaa'" onchange="check()"></span><BR><BR>
+		<span style="margin-left:35em"><input type="text" name="topupval" style="font-family: 'Comfortaa'"></span><BR><BR>
 		
 		<span style="margin-left:60em">
-			
-			<input type="submit" value="Register" style="font-family: 'Comfortaa'" />
+			<input type="hidden" name="action" value="AfterTopUp">
+			<input type="submit" value="Top Up Now" style="font-family: 'Comfortaa'" />
 		</span>
-		
-		<script>
-			function check(){
-				var topupvalue = parseInt(document.getElementByType("topupval").value);
-				if(topupvalue < 10000){
-					alert("Minimum top up is Rp 10.000");
-				}
-			}
-		</script>
 	</form>
 </body>
 </html>

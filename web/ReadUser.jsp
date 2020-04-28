@@ -44,7 +44,7 @@
 					</script>
 
 					<span style="margin-left:3em">
-						<input type="submit" name="action" value="Retrieve All Driver Data" style="font-family: 'Comfortaa'"/>
+						<input type="submit" name="action" value="Retrieve All User Data" style="font-family: 'Comfortaa'"/>
 					</span>
 					
 					<br><br>
@@ -59,8 +59,6 @@
 						<label for="telpnum" style="font-family: 'Comfortaa'">Telephone Number</label><span style="margin-left:1em"></span>
 					<input type="radio" id="street" name="attribute user" value="street">
 						<label for="street" style="font-family: 'Comfortaa'">Street</label><span style="margin-left:1em"></span>
-					<input type="radio" id="city" name="attribute user" value="city">
-						<label for="city" style="font-family: 'Comfortaa'">City</label><span style="margin-left:1em"></span>
 					
 					<br><br>
 					
@@ -80,7 +78,7 @@
 				            <td>${dataItem.getFull_name()}</td>
 				            <td>${dataItem.getEmail()}</td>
 				            <td>${dataItem.getTelp_no()}</td>
-				            <td>${dataItem.getLocation().getStreet()} - ${dataItem.getLocation().getCity()}</td>
+				            <td>${dataItem.getLocation().getStreet()}</td>
 				            <td><fmt:setLocale value = "id_ID"/>
          						<fmt:formatNumber value = "${dataItem.getSaldo_gopay()}" type = "currency"/>
          					</td>

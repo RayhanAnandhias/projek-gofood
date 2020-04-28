@@ -55,8 +55,6 @@
 						<label for="name" style="font-family: 'Comfortaa'">Name</label><span style="margin-left:1em"></span>
 					<input type="radio" id="street" name="attribute rest" value="street">
 						<label for="street" style="font-family: 'Comfortaa'">Street</label><span style="margin-left:1em"></span>
-					<input type="radio" id="city" name="attribute rest" value="city">
-						<label for="city" style="font-family: 'Comfortaa'">City</label><span style="margin-left:1em"></span>
 					<input type="radio" id="telp_no" name="attribute rest" value="telp_no">
 						<label for="telp_no" style="font-family: 'Comfortaa'">Telephone Number</label><span style="margin-left:1em"></span>
 					<input type="radio" id="detail" name="attribute rest" value="detail">
@@ -78,7 +76,7 @@
 	            	<form action="ActionController" method="post">
 				        <tr>
 				            <td>${dataItem.getName()}</td>
-				            <td>${dataItem.getLocation().getStreet()} - ${dataItem.getLocation().getCity()}</td>
+				            <td>${dataItem.getLocation().getStreet()}</td>
 				            <td>${dataItem.getTelp_no()}</td>
 				            <td>${dataItem.getDetail()}</td>
 				            <td><input type="submit" name="action" value="view food" style="font-family: 'Comfortaa'"></td>
@@ -87,9 +85,6 @@
 				        </tr>
 				        <input type="hidden" name="kode" value="${dataItem.getKode()}">
 				        <input type="hidden" name="name" value="${dataItem.getName()}">
-				        <input type="hidden" name="locationkode" value="${dataItem.getLocation().getKode()}">
-				        <input type="hidden" name="street" value="${dataItem.getLocation().getStreet()}">
-				        <input type="hidden" name="city" value="${dataItem.getLocation().getCity()}">
 				        <input type="hidden" name="telpnum" value="${dataItem.getTelp_no()}">
 				        <input type="hidden" name="detail" value="${dataItem.getDetail()}">
 				     </form>
