@@ -12,7 +12,7 @@
 	</head>
 	<body>
 		<form action="ActionController" method="post">
-			<input type="submit" name="action" value="Back to Main Menu" style="font-family: 'Comfortaa'">
+			<input type="submit" name="action" value="Back to Main menu" style="font-family: 'Comfortaa'">
 		</form>
 		<div align="center">
 			<table border="1" cellpadding="5" style="font-family: 'Comfortaa'">
@@ -27,7 +27,7 @@
 					<c:set var = "atrrestval" value = "${attributerest}"/>
 	            	<input type="search" name="search restaurant box" style="font-family: 'Comfortaa'" value="${boxvalue}" onchange="setCheckedValueOfRadioButtonGroup('${atrrestval}')">
 	            	<span style="margin-left:1em">
-						<input type="submit" name="action" value="Search Restaurant by" style="font-family: 'Comfortaa'" />
+						<input type="submit" name="action" value="Search Restaurant By" style="font-family: 'Comfortaa'" />
 					</span>
 					
 					<script>
@@ -43,7 +43,7 @@
 					</script>
 
 					<span style="margin-left:3em">
-						<input type="submit" name="action" value="Retrieve All Restaurant Data" style="font-family: 'Comfortaa'"/>
+						<input type="submit" name="action" value="Retrieve All Restaurant data" style="font-family: 'Comfortaa'"/>
 					</span>
 					
 					<br><br>
@@ -76,7 +76,7 @@
 				            <td>${dataItem.getLocation().getStreet()}</td>
 				            <td>${dataItem.getTelp_no()}</td>
 				            <td>${dataItem.getDetail()}</td>
-				            <td><input type="submit" name="action" value="view food" style="font-family: 'Comfortaa'"></td>
+				            <td><input type="submit" name="action" value="view Food" style="font-family: 'Comfortaa'"></td>
 				        </tr>
 				        <input type="hidden" name="kode" value="${dataItem.getKode()}">
 				        <input type="hidden" name="name" value="${dataItem.getName()}">

@@ -28,6 +28,9 @@ import model.Restaurant;
 import model.User;
 import model.Location;
 import astar.*;
+import com.mongodb.MongoCredential;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -39,11 +42,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import model.Driver;
+import model.Motor;
 import model.Pesanan;
 import org.bson.types.ObjectId;
 /**
  *
  * @author rayhan
+ * @author Ananda Bayu
  */
 public class MongoDbUtils {
     private MongoDatabase database;
@@ -57,6 +62,12 @@ public class MongoDbUtils {
     //collection
     
     public MongoDbUtils() {
+        // Creating Credentials 
+        MongoCredential credential; 
+        credential = MongoCredential.createCredential("User", "ProjectGoFood", 
+                        "password".toCharArray()); 
+        System.out.println("Connected to the database successfully");
+        
         CodecRegistry pojoCodecRegistry = 
                 fromRegistries(MongoClient.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder()
@@ -66,7 +77,7 @@ public class MongoDbUtils {
             MongoClient("localhost", MongoClientOptions.builder()
                 .codecRegistry(pojoCodecRegistry).build());
         
-        database = mongo.getDatabase("myDb"); 
+        database = mongo.getDatabase("ProjectGoFood");
         database = database.withCodecRegistry(pojoCodecRegistry);
         users = database.getCollection("users", User.class);
         usersVersion = database.getCollection("usersVersion", User.class);
@@ -300,6 +311,138 @@ public class MongoDbUtils {
         }
     }
     
+    //Operator Feature
+  	//method untuk insert driver ke collections
+    public boolean insertDriver(String fullName, String email, String telpNum, String platNum, String merk) {
+		try {
+			Motor motor = new Motor(platNum, merk);
+			Random random = new Random();
+			Location location = locations.find(eq("kode", Integer.toString(random.nextInt(5) + 6))).first();
+			
+			Driver driver = new Driver(fullName, email, telpNum, motor, location);	
+			
+			String id = new ObjectId().toString();
+			driver.setKode(id);
+			
+			drivers.insertOne(driver);			
+			System.out.println("data inserted");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
+	}
+    
+    public ArrayList<Driver> getDriver() throws IOException {		
+		ArrayList<Driver> resultList = new ArrayList<>();
+		FindIterable<Driver> driverIterable = drivers.find();
+		
+		for (Driver driver : driverIterable) {
+			System.out.println(driver);
+			resultList.add(driver);
+		}		
+		return resultList;
+	}
+    
+    public ArrayList<Driver> getDriverByCategory(String category, String value) throws IOException {		
+		ArrayList<Driver> resultList = new ArrayList<>();
+		FindIterable<Driver> driverIterable = null;
+		
+		switch(category) {
+			case "kode":{
+				driverIterable = drivers.find(regex("kode", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "full_name":{
+				driverIterable = drivers.find(regex("full_name", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "email":{
+				driverIterable = drivers.find(regex("email", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "telp_no":{
+				driverIterable = drivers.find(regex("telp_no", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "no_plat":{
+				driverIterable = drivers.find(regex("motor.no_Plat", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "merk":{
+				driverIterable = drivers.find(regex("motor.merk", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "street":{
+				driverIterable = drivers.find(regex("location.street", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+		}
+		
+		for(Driver temp : driverIterable) {
+			resultList.add(temp);
+			System.out.println(temp);
+		}
+		
+		return resultList;
+	}
+    
+    public boolean updateDriver(String row, String fullName, String email, String telpNum, String platNum, String merk) {		
+		try {	
+			drivers.updateOne(Filters.eq("kode", row), Updates.set("full_name", fullName));
+			drivers.updateOne(Filters.eq("kode", row), Updates.set("email", email));
+			drivers.updateOne(Filters.eq("kode", row), Updates.set("telp_no", telpNum));
+			Motor motor = new Motor(platNum, merk);
+			drivers.updateOne(Filters.eq("kode", row), Updates.set("motor", motor));
+			System.out.println("data updated");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+    
+    public boolean deleteDriver(String row) {
+		DeleteResult del = drivers.deleteOne(eq("kode", row));
+		System.out.println("del on Driver = " + del.getDeletedCount());
+		return true;
+	}
+    
+    public boolean insertRestaurant(String fullName, String telpNum, String detail, String listFoodName[], String listFoodPrice[], String listFoodQuant[], 
+    		String listFoodDetail[]) {
+		try {
+			List<String> foodId = new ArrayList<>();
+			
+			//set var location and set the value
+			Random random = new Random();
+			Location location = locations.find(eq("kode", Integer.toString(random.nextInt(5) + 6))).first();
+			String id = null;
+			
+			//iteator for inserting food to the collection
+			for(int i = 0; i < listFoodName.length; i++) {
+				Food food = new Food(listFoodName[i], Integer.parseInt(listFoodPrice[i]), Integer.parseInt(listFoodQuant[i]),
+						listFoodDetail[i]);
+				
+				id = new ObjectId().toString();
+				foodId.add(id);
+				food.setKode(id);
+				foods.insertOne(food);
+			}
+			
+			Restaurant restaurant = new Restaurant(fullName, location, telpNum, detail, foodId);
+			restaurant.setLocation(location);
+			id = new ObjectId().toString();
+			restaurant.setKode(id);
+			System.out.println(location.getStreet());
+			restaurants.insertOne(restaurant);			
+			System.out.println("data inserted");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
+	}
+    
     public ArrayList<Restaurant> getRestaurant() throws IOException {		
 		ArrayList<Restaurant> resultList = new ArrayList<>();
 		FindIterable<Restaurant> restaurantIterable = restaurants.find();
@@ -309,7 +452,7 @@ public class MongoDbUtils {
 			resultList.add(restaurant);
 		}		
 		return resultList;
-    }
+	}
     
     public ArrayList<Restaurant> getRestaurantByCategory(String category, String value) throws IOException {		
 		ArrayList<Restaurant> resultList = new ArrayList<>();
@@ -336,10 +479,6 @@ public class MongoDbUtils {
 				restaurantIterable = restaurants.find(regex("location.street", ".*" + Pattern.quote(value) + ".*"));
 				break;
 			}
-			case "city":{
-				restaurantIterable = restaurants.find(regex("location.city", ".*" + Pattern.quote(value) + ".*"));
-				break;
-			}
 		}
 		
 		for(Restaurant temp : restaurantIterable) {
@@ -348,6 +487,46 @@ public class MongoDbUtils {
 		}
 		
 		return resultList;
+	}
+    
+    public boolean updateRestaurant(String row, String name, String telpNum, String detail) {		
+		try {	
+			restaurants.updateOne(Filters.eq("kode", row), Updates.set("name", name));
+			restaurants.updateOne(Filters.eq("kode", row), Updates.set("telp_no", telpNum));
+			restaurants.updateOne(Filters.eq("kode", row), Updates.set("detail", detail));
+			
+			System.out.println("data updated");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+    
+    public boolean deleteRestaurant(String row) {
+    	FindIterable<Restaurant> restaurantIterable = restaurants.find();
+    	Restaurant restaurant = null;
+		for (Restaurant temp : restaurantIterable) {
+			if(temp.getKode().equals(row))
+				restaurant = temp;
+		}
+		int counter = 0;
+		FindIterable<Food> foodIterable = foods.find();
+		List<String> idFood = restaurant.getListFoodId();
+		for(String id : idFood) {
+			for (Food temp : foodIterable) {
+				if(temp.getKode().equals(id)) {
+					counter++;
+					foods.deleteOne(eq("kode", id));
+				}
+					
+			}
+		}
+    	
+		DeleteResult del = restaurants.deleteOne(eq("kode", row));
+		System.out.println("del on Restaurant = " + del.getDeletedCount());
+		System.out.println("del on Food = " + counter);
+		return true;
 	}
     
     public ArrayList<Food> getFoodOnRestaurant(String row) throws IOException {		
@@ -370,5 +549,166 @@ public class MongoDbUtils {
 			}
 		}
 		return resultList;
-    }
+	}
+    
+    public boolean updateFoodOnRestaurant(String row, String name, int price, int quantity, String detail) {		
+		try {	
+			foods.updateOne(Filters.eq("kode", row), Updates.set("name", name));
+			foods.updateOne(Filters.eq("kode", row), Updates.set("price", price));
+			foods.updateOne(Filters.eq("kode", row), Updates.set("quantity", quantity));
+			foods.updateOne(Filters.eq("kode", row), Updates.set("detail", detail));
+			System.out.println("data updated");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+    
+    public boolean deleteFoodOnRestaurant(String restRow, String foodRow) {
+    	FindIterable<Restaurant> restaurantIterable = restaurants.find();
+    	Restaurant restaurant = null;
+		for (Restaurant temp : restaurantIterable) {
+			if(temp.getKode().equals(restRow))
+				restaurant = temp;
+		}
+		List<String> idFood = restaurant.getListFoodId();
+		if(idFood.size() > 1) {
+			DeleteResult del = foods.deleteOne(eq("kode", foodRow));
+			System.out.println(idFood.size());
+			idFood.remove(foodRow);
+	    	System.out.println(idFood.size());
+	    	restaurants.updateOne(Filters.eq("kode", restRow), Updates.set("listFoodId", idFood));
+			System.out.println("del on Food = " + del.getDeletedCount());
+			return true;
+		}
+		return false;
+	}
+    
+    public ArrayList<User> getUser() throws IOException {		
+		ArrayList<User> resultList = new ArrayList<>();
+		FindIterable<User> userIterable = users.find();
+		
+		for (User user : userIterable) {
+			System.out.println(user);
+			resultList.add(user);
+		}		
+		return resultList;
+	}
+    
+    public ArrayList<User> getUserByCategory(String category, String value) throws IOException {		
+		ArrayList<User> resultList = new ArrayList<>();
+		FindIterable<User> userIterable = null;
+		
+		switch(category) {
+			case "kode":{
+				userIterable = users.find(regex("kode", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "full_name":{
+				userIterable = users.find(regex("full_name", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "email":{
+				userIterable = users.find(regex("email", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "telp_no":{
+				userIterable = users.find(regex("telp_no", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "street":{
+				userIterable = users.find(regex("location.street", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			
+		}
+		
+		for(User temp : userIterable) {
+			resultList.add(temp);
+			System.out.println(temp);
+		}
+		
+		return resultList;
+	}
+    
+    public boolean topUpGopay(String row, int saldo) {		
+		try {
+			FindIterable<User> userIterable = users.find();
+			int saldoNow = saldo;
+			for (User user : userIterable) {
+				if(user.getKode().equals(row)) {
+					saldoNow+=user.getSaldo_gopay();
+				}
+			}
+			users.updateOne(Filters.eq("kode", row), Updates.set("saldo_gopay", saldoNow));
+			System.out.println("data updated");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+    
+    public boolean deleteUser(String row) {
+		DeleteResult del = users.deleteOne(eq("kode", row));
+		System.out.println("del on User = " + del.getDeletedCount());
+		return true;
+	}
+    
+    public ArrayList<Pesanan> getPesanan() throws IOException {		
+		ArrayList<Pesanan> resultList = new ArrayList<>();
+		FindIterable<Pesanan> pesananIterable = pesanan.find();
+		
+		for (Pesanan pesanan : pesananIterable) {
+			System.out.println(pesanan);
+			resultList.add(pesanan);
+		}		
+		return resultList;
+	}
+    
+    public ArrayList<Pesanan> getPesananByCategory(String category, String value) throws IOException {		
+		ArrayList<Pesanan> resultList = new ArrayList<>();
+		FindIterable<Pesanan> pesananIterable = null;
+		
+		switch(category) {
+			case "kode":{
+				pesananIterable = pesanan.find(regex("kode", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "user_id":{
+				pesananIterable = pesanan.find(regex("user_id", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "restaurant_id":{
+				pesananIterable = pesanan.find(regex("restaurant_id", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "driver_id":{
+				pesananIterable = pesanan.find(regex("driver_id", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "pesanan":{
+				pesananIterable = pesanan.find(regex("pesanan", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "payment_method":{
+				if(value == "gopay") {
+					pesananIterable = pesanan.find(regex("payment_method", ".*" + Pattern.quote(Boolean.toString(true)) + ".*"));
+				}
+				else if(value == "cash") {
+					pesananIterable = pesanan.find(regex("payment_method", ".*" + Pattern.quote(Boolean.toString(false)) + ".*"));
+				}
+				break;
+			}
+			
+		}
+		
+		for(Pesanan temp : pesananIterable) {
+			resultList.add(temp);
+			System.out.println(temp);
+		}
+		
+		return resultList;
+	}
 }

@@ -12,7 +12,7 @@
 	</head>
 	<body>
 		<form action="ActionController" method="post">
-			<input type="hidden" name="action" value = "Retrieve All Restaurant Data">
+			<input type="hidden" name="action" value = "Retrieve All Restaurant data">
 			<input type="submit"  value="Back" style="font-family: 'Comfortaa'">
 		</form>
 		<div align="center">
