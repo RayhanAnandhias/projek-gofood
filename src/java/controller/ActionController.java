@@ -169,7 +169,7 @@ public class ActionController extends HttpServlet {
             List<Food> listFood = mongodbUtils.getFoodOnRestaurant(row);
             request.setAttribute("dataList", listFood);
             request.setAttribute("restnameparam", restaurantName);
-            request.getRequestDispatcher("/ReadFood.jsp").forward(request, response);
+            request.getRequestDispatcher("/ReadFoodUser.jsp").forward(request, response);
         }catch (Exception e) {
                 e.printStackTrace();
         }
