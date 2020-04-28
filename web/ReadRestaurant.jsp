@@ -49,6 +49,8 @@
 					
 					<br><br>
 					<label style="font-family: 'Comfortaa'">Search by :</label>
+					<input type="radio" id="kode" name="attribute rest" value="kode">
+						<label for="kode" style="font-family: 'Comfortaa'">Kode</label><span style="margin-left:1em"></span>
 					<input type="radio" id="name" name="attribute rest" value="name">
 						<label for="name" style="font-family: 'Comfortaa'">Name</label><span style="margin-left:1em"></span>
 					<input type="radio" id="street" name="attribute rest" value="street">

@@ -19,6 +19,7 @@ import model.Driver;
 import model.Food;
 import model.Location;
 import model.Motor;
+import model.Pesanan;
 import model.Restaurant;
 import model.User;
 
@@ -124,6 +125,10 @@ public class ActionController extends HttpServlet {
         	RequestDispatcher rd = request.getRequestDispatcher("/ReadUser.jsp");
 			rd.forward(request, response);
         }
+        else if("View Pesanan".equals(action)) {
+        	RequestDispatcher rd = request.getRequestDispatcher("/ReadPesanan.jsp");
+			rd.forward(request, response);
+        }
         else if("Retrieve All Driver Data".equals(action)) {
         	showDriverData(request, response, mongodbUtils);
         }
@@ -132,6 +137,9 @@ public class ActionController extends HttpServlet {
         }
         else if("Retrieve All User Data".equals(action)) {
         	showUserData(request, response, mongodbUtils);
+        }
+        else if("Retrieve All Pesanan Data".equals(action)) {
+        	showPesananData(request, response, mongodbUtils);
         }
         else if("Search Driver by".equals(action)) {
         	try{ 
@@ -173,6 +181,12 @@ public class ActionController extends HttpServlet {
             } 
             catch(NullPointerException e){ 
             	request.getRequestDispatcher("/ReadUser.jsp").forward(request, response);
+            } 
+        }
+        else if("Search Pesanan by".equals(action)) {
+        	try{ 
+            } 
+            catch(NullPointerException e){ 
             } 
         }
         else if("delete driver".equals(action)) {
@@ -398,6 +412,17 @@ public class ActionController extends HttpServlet {
     	try {
 			List<User> listUser = mongodbUtils.getUser();
 			request.setAttribute("dataList", listUser);
+			request.getRequestDispatcher("/ReadUser.jsp").forward(request, response);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public void showPesananData(HttpServletRequest request, HttpServletResponse response,
+			MongoDbUtils mongodbUtils) {
+    	try {
+			List<Pesanan> listPesanan = mongodbUtils.getPesanan();
+			request.setAttribute("dataList", listPesanan);
 			request.getRequestDispatcher("/ReadUser.jsp").forward(request, response);
 		}catch (Exception e) {
 			e.printStackTrace();

@@ -55,6 +55,7 @@ public class MongoDbUtils {
     MongoCollection<Restaurant> restaurantCollection;
     MongoCollection<Food> foodCollection;
     MongoCollection<User> userCollection;
+    MongoCollection<Pesanan> pesananCollection;
     
     public MongoDbUtils() {
     	// Creating Credentials 
@@ -79,6 +80,7 @@ public class MongoDbUtils {
 		restaurantCollection = database.getCollection("restaurantCollection", Restaurant.class);
 		foodCollection = database.getCollection("foodCollection", Food.class);
 		userCollection = database.getCollection("userCollection", User.class);
+		pesananCollection = database.getCollection("pesananCollection", Pesanan.class);
     }
     
   //method untuk insert driver ke collections
@@ -121,6 +123,10 @@ public class MongoDbUtils {
 		FindIterable<Driver> driverIterable = null;
 		
 		switch(category) {
+			case "kode":{
+				driverIterable = driverCollection.find(regex("kode", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
 			case "full_name":{
 				driverIterable = driverCollection.find(regex("full_name", ".*" + Pattern.quote(value) + ".*"));
 				break;
@@ -134,7 +140,6 @@ public class MongoDbUtils {
 				break;
 			}
 			case "no_plat":{
-				System.out.println("here");
 				driverIterable = driverCollection.find(regex("motor.no_Plat", ".*" + Pattern.quote(value) + ".*"));
 				break;
 			}
@@ -235,6 +240,10 @@ public class MongoDbUtils {
 		FindIterable<Restaurant> restaurantIterable = null;
 		
 		switch(category) {
+			case "kode":{
+				restaurantIterable = restaurantCollection.find(regex("kode", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
 			case "name":{
 				restaurantIterable = restaurantCollection.find(regex("name", ".*" + Pattern.quote(value) + ".*"));
 				break;
@@ -380,6 +389,10 @@ public class MongoDbUtils {
 		FindIterable<User> userIterable = null;
 		
 		switch(category) {
+			case "kode":{
+				userIterable = userCollection.find(regex("kode", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
 			case "full_name":{
 				userIterable = userCollection.find(regex("full_name", ".*" + Pattern.quote(value) + ".*"));
 				break;
@@ -434,4 +447,51 @@ public class MongoDbUtils {
 		System.out.println("del on User = " + del.getDeletedCount());
 		return true;
 	}
+    
+    public ArrayList<Pesanan> getPesanan() throws IOException {		
+		ArrayList<Pesanan> resultList = new ArrayList<>();
+		FindIterable<Pesanan> pesananIterable = pesananCollection.find();
+		
+		for (Pesanan pesanan : pesananIterable) {
+			System.out.println(pesanan);
+			resultList.add(pesanan);
+		}		
+		return resultList;
+	}
+    /*
+    public ArrayList<Pesanan> getPesananByCategory(String category, String value) throws IOException {		
+		ArrayList<Pesanan> resultList = new ArrayList<>();
+		FindIterable<Pesanan> pesananIterable = null;
+		
+		switch(category) {
+			case "user_id":{
+				pesananIterable = userCollection.find(regex("full_name", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "restaurant_id":{
+				pesananIterable = userCollection.find(regex("email", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "driver_id":{
+				pesananIterable = userCollection.find(regex("telp_no", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "street":{
+				pesananIterable = userCollection.find(regex("location.street", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "city":{
+				pesananIterable = userCollection.find(regex("location.city", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			
+		}
+		
+		for(User temp : userIterable) {
+			resultList.add(temp);
+			System.out.println(temp);
+		}
+		
+		return resultList;
+	}*/
 }
