@@ -6,17 +6,23 @@
 package controller;
 
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.Food;
+import model.Restaurant;
+import model.User;
 
 /**
  *
  * @author rayhan
  */
 public class ActionController extends HttpServlet {
-    
+    private String vrow;
+    private String restaurantName;
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -60,8 +66,10 @@ public class ActionController extends HttpServlet {
         } else if(action.equals("submitLogin")) {
             String email = request.getParameter("email");
             String pwd = request.getParameter("pwd");
-            boolean result = mongodbUtils.validateUser(email,pwd);
-            if(result) {
+            User result = mongodbUtils.validateUser(email,pwd);
+            if(result != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", result);
                 request.getRequestDispatcher("/menu.jsp")
                     .forward(request, response);
             }else {
@@ -79,6 +87,91 @@ public class ActionController extends HttpServlet {
                 request.getRequestDispatcher("/error.jsp")
                     .forward(request, response);
             }
+        } else if(action.equals("Update Profile")) {
+            request.getRequestDispatcher("/updateUser.jsp")
+                    .forward(request, response);
+        } else if(action.equals("Log Out")) {
+            HttpSession session=request.getSession();  
+            session.invalidate();
+            request.getRequestDispatcher("/index.jsp")
+                    .forward(request, response);
+        }else if(action.equals("updateUser")) {
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String noTelp = request.getParameter("no_telp");
+            String pwd = request.getParameter("pwd");
+            String kode = request.getParameter("kode");
+            boolean result = 
+                    mongodbUtils.updateDataUser(kode, name, pwd, email, noTelp);
+            if(result) {
+                User user = mongodbUtils.validateUser(email,pwd);
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                request.getRequestDispatcher("/menu.jsp")
+                    .forward(request, response);
+            }else {
+                request.getRequestDispatcher("/error.jsp")
+                    .forward(request, response);
+            }
+        } else if(action.equals("Check Gopay")) {
+            request.getRequestDispatcher("/checkGopay.jsp")
+                .forward(request, response);
+        } else if(action.equals("Search Restaurant")) {
+            request.getRequestDispatcher("/searchResto.jsp")
+                .forward(request, response);
+        } else if(action.equals("searchFood")) {
+            
+        } else if(action.equals("createOrder")) {
+            
+        } else if(action.equals("seeOrder")) {
+            
+        }else if("Back to Main Menu".equals(action)){
+            request.getRequestDispatcher("/menu.jsp")
+                .forward(request, response);
+        }else if("Search Restaurant by".equals(action)) {
+        	try{
+        		String category = request.getParameter("attribute rest");
+    	    	String boxValue = request.getParameter("search restaurant box");
+	    		List<Restaurant> listRestaurant = mongodbUtils.getRestaurantByCategory(category, boxValue);
+				request.setAttribute("dataList", listRestaurant);
+				request.setAttribute("sdbvalue", boxValue);
+				request.setAttribute("attributerest", category);
+				request.getRequestDispatcher("/searchResto.jsp").forward(request, response);
+            } 
+            catch(NullPointerException e){ 
+            	request.getRequestDispatcher("/searchResto.jsp").forward(request, response);
+            } 
+        }else if("view food".equals(action)) {
+        	vrow = request.getParameter("kode");
+        	restaurantName = request.getParameter("name");
+        	System.out.println(vrow + " " + restaurantName);
+        	showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
+        }
+        else if("Retrieve All Restaurant Data".equals(action)) {
+        	showRestaurantData(request, response, mongodbUtils);
+        }
+    }
+    
+    public void showRestaurantData(HttpServletRequest request, HttpServletResponse response,
+			MongoDbUtils mongodbUtils) {
+    	try {
+            List<Restaurant> listRestaurant = mongodbUtils.getRestaurant();
+            request.setAttribute("dataList", listRestaurant);
+            request.getRequestDispatcher("/searchResto.jsp").forward(request, response);
+        }catch (Exception e) {
+                e.printStackTrace();
+        }
+    }
+    
+    public void showFoodOnRestaurantData(HttpServletRequest request, HttpServletResponse response,
+            MongoDbUtils mongodbUtils, String row) {
+    	try {
+            List<Food> listFood = mongodbUtils.getFoodOnRestaurant(row);
+            request.setAttribute("dataList", listFood);
+            request.setAttribute("restnameparam", restaurantName);
+            request.getRequestDispatcher("/ReadFood.jsp").forward(request, response);
+        }catch (Exception e) {
+                e.printStackTrace();
         }
     }
 

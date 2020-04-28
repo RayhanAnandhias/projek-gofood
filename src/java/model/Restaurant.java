@@ -9,20 +9,20 @@ public class Restaurant {
 	private String telp_no;
 	private String detail;
 	//private List<Picture> picture;
-	private List<Food> menu;
+	private List<String> foodId;
 	
 	public Restaurant() {
 	    super();
 	}
 	
 	public Restaurant(String name, Location location,
-			String telp_no, String detail, List<Food> menu) {
+			String telp_no, String detail, List<String> foodId) {
 		super();
 		this.name = name;
 		this.location = location;
 		this.telp_no = telp_no;
 		this.detail = detail;
-		this.menu = menu;
+		this.foodId = foodId;
 	}
 	
 	public final String getKode() {
@@ -63,5 +63,13 @@ public class Restaurant {
 
 	public void setDetail(String detail) {
 		this.detail = detail;
+	}
+        
+        public List<String> getListFoodId(){
+		return foodId;
+	}
+	
+	public void setListFoodId(List<String> foodId) {
+		this.foodId = foodId;
 	}
 }

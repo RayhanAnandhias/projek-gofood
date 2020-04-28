@@ -100,18 +100,18 @@ public class MongoDbUtils {
         return true;
     }
 
-    public boolean validateUser(String email, String pwd) {
+    public User validateUser(String email, String pwd) {
         User user;
         try {
             user = users.find(and(eq("email", email), eq("password", pwd))).first();
             if(user != null) {
-                return true;
+                return user;
             } else {
-                return false;
+                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
     
@@ -298,5 +298,77 @@ public class MongoDbUtils {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    public ArrayList<Restaurant> getRestaurant() throws IOException {		
+		ArrayList<Restaurant> resultList = new ArrayList<>();
+		FindIterable<Restaurant> restaurantIterable = restaurants.find();
+		
+		for (Restaurant restaurant : restaurantIterable) {
+			System.out.println(restaurant);
+			resultList.add(restaurant);
+		}		
+		return resultList;
+    }
+    
+    public ArrayList<Restaurant> getRestaurantByCategory(String category, String value) throws IOException {		
+		ArrayList<Restaurant> resultList = new ArrayList<>();
+		FindIterable<Restaurant> restaurantIterable = null;
+		
+		switch(category) {
+			case "kode":{
+				restaurantIterable = restaurants.find(regex("kode", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "name":{
+				restaurantIterable = restaurants.find(regex("name", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "telp_no":{
+				restaurantIterable = restaurants.find(regex("telp_no", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "detail":{
+				restaurantIterable = restaurants.find(regex("detail", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "street":{
+				restaurantIterable = restaurants.find(regex("location.street", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+			case "city":{
+				restaurantIterable = restaurants.find(regex("location.city", ".*" + Pattern.quote(value) + ".*"));
+				break;
+			}
+		}
+		
+		for(Restaurant temp : restaurantIterable) {
+			resultList.add(temp);
+			System.out.println(temp);
+		}
+		
+		return resultList;
+	}
+    
+    public ArrayList<Food> getFoodOnRestaurant(String row) throws IOException {		
+    	ArrayList<Food> resultList = new ArrayList<>();
+    	List<String> foodId = new ArrayList<>();
+		FindIterable<Restaurant> restaurantIterable = restaurants.find();
+		
+		for (Restaurant restaurant : restaurantIterable) {
+			if(restaurant.getKode().equals(row)) {
+				foodId = restaurant.getListFoodId();
+				break;
+			}
+		}
+		FindIterable<Food> foodIterable = foods.find();
+		for(String id : foodId) {
+			for(Food food : foodIterable) {
+				if(food.getKode().equals(id)) {
+					resultList.add(food);
+				}
+			}
+		}
+		return resultList;
     }
 }
