@@ -7,7 +7,7 @@ public class Pesanan {
 	private String user_id;
 	private String restaurant_id;
 	private String driver_id;
-	private List<String> pesanan;
+	private List<ItemPesanan> pesanan;
 	private boolean payment_method;
 	private int ongkir;
 	private int total_cost;
@@ -17,7 +17,7 @@ public class Pesanan {
 	}
 	
 	public Pesanan(String user_id, String restaurant_id,
-			String driver_id, List<String> pesanan,
+			String driver_id, List<ItemPesanan> pesanan,
 			boolean payment_method,
 			int ongkir, int total_cost) {
 		super();
@@ -63,11 +63,11 @@ public class Pesanan {
 		this.driver_id = driver_id;
 	}
 	
-	public List<String> getPesanan(){
+	public List<ItemPesanan> getPesanan(){
 		return this.pesanan;
 	}
 	
-	public void setPesanan(List<String> pesanan) {
+	public void setPesanan(List<ItemPesanan> pesanan) {
 		this.pesanan = pesanan;
 	}
 	

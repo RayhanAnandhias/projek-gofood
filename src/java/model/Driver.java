@@ -7,6 +7,7 @@ public class Driver {
 	private String telp_no;
 	private Motor motor;
 	private Location location;
+        private Double jarakToResto;
 	
 	public Driver() {
 	    super();
@@ -70,4 +71,14 @@ public class Driver {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+
+        public void setJarakToResto(Double jarakToResto) {
+            this.jarakToResto = jarakToResto;
+        }
+
+        public Double getJarakToResto() {
+            return jarakToResto;
+        }
+        
+        
 }

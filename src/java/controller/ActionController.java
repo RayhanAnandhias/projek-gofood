@@ -26,6 +26,8 @@ public class ActionController extends HttpServlet {
     private String restaurantName;
     private String vrowf;
     private String foodName;
+    private String idResto;
+    List<Food> fd = new ArrayList<Food>();
     boolean locationHasBeenInserted = false;
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -87,6 +89,8 @@ public class ActionController extends HttpServlet {
             if(result != null) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", result);
+                fd = new ArrayList<Food>();
+                idResto = null;
                 request.getRequestDispatcher("/menu.jsp")
                     .forward(request, response);
             }else {
@@ -112,6 +116,8 @@ public class ActionController extends HttpServlet {
         else if(action.equals("Log Out")) {
             HttpSession session=request.getSession();  
             session.invalidate();
+            fd = new ArrayList<Food>();
+            idResto = null;
             request.getRequestDispatcher("/index.jsp")
                     .forward(request, response);
         }
@@ -147,7 +153,11 @@ public class ActionController extends HttpServlet {
                 .forward(request, response);
         }
         else if(action.equals("Create Order")) {
-            
+            Restaurant resto = mongodbUtils.getRestaurantByID(idResto);
+            request.setAttribute("dataList", fd);
+            request.setAttribute("resto", resto);
+            request.getRequestDispatcher("/createOrder.jsp")
+                .forward(request, response);
         }
         else if(action.equals("See Order")) {
             
@@ -202,6 +212,38 @@ public class ActionController extends HttpServlet {
         }
         else if("Retrieve All Food data".equals(action)) {
             showFoodDataUser(request, response, mongodbUtils);
+        }
+        else if("add to cart".equals(action)) {
+            String id_resto = request.getParameter("id_resto");
+            idResto = id_resto;
+            String kodeFood = request.getParameter("kode");
+            String name = request.getParameter("name");
+            int price = Integer.parseInt(request.getParameter("price"));
+            String detail = request.getParameter("detail");
+            Food onePesanan = new Food(name, price, detail);
+            onePesanan.setKode(kodeFood);
+            fd.add(onePesanan);
+            showFoodOnRestaurantDataUser(request, response, mongodbUtils, vrow);
+            
+        }
+        else if("orderFood".equals(action)) {
+            String id_user = request.getParameter("idUser");
+            System.out.println(id_user);
+            String id_resto = request.getParameter("kodeResto");
+            System.out.println(id_resto);
+            String foodKode[] = request.getParameterValues("kode");
+            String foodPrice[] = request.getParameterValues("price");
+            String foodQuantity[] = request.getParameterValues("quantity");
+            boolean result = mongodbUtils.createPesanan(id_user, id_resto, foodKode, foodPrice, foodQuantity);
+            if(result) {
+                fd = new ArrayList<Food>();
+                idResto = null;
+                request.getRequestDispatcher("/menu.jsp")
+                    .forward(request, response);
+            }else {
+                request.getRequestDispatcher("/error.jsp")
+                    .forward(request, response);
+            }
         }
         
         
@@ -585,6 +627,7 @@ public class ActionController extends HttpServlet {
     	try {
 			List<Food> listFood = mongodbUtils.getFoodOnRestaurant(row);
 			request.setAttribute("dataList", listFood);
+                        request.setAttribute("idResto", vrow);
 			request.setAttribute("restnameparam", restaurantName);
 			request.getRequestDispatcher("/ReadFoodUser.jsp").forward(request, response);
 		}catch (Exception e) {

@@ -23,10 +23,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.client.FindIterable;
 import java.util.regex.Pattern;
-import model.Food;
-import model.Restaurant;
-import model.User;
-import model.Location;
+import model.*;
 import astar.*;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.model.Filters;
@@ -252,20 +249,34 @@ public class MongoDbUtils {
     }
     
     
-    public boolean createPesanan(String userId, String restoId, String locId, List<String> listOrder, boolean method, int hargaMakanan) {
+    public boolean createPesanan(String userId, String restoId, String[] foodKode, String[] foodPrice, String[] foodQuantity) {
         Pesanan orders;
         Driver driver;
         User user;
         Restaurant resto;
         int ongkir;
         double jarak;
+        int hargaFood = 0;
+        List<ItemPesanan> lsPesanan = new ArrayList<>();
+        HaversineScorer scorer = new HaversineScorer();
         try {
+            System.out.println("MASUK CREATE PESANAN");
             user = users.find(eq("kode", userId)).first();
+            System.out.println(user.getFull_name());
             resto = restaurants.find(eq("kode", restoId)).first();
+            System.out.println(resto.getName());
+            for (int i = 0; i < foodKode.length; i++) {
+                lsPesanan.add(new ItemPesanan(foodKode[i], Integer.parseInt(foodQuantity[i])));
+                hargaFood = Integer.parseInt(foodPrice[i])*Integer.parseInt(foodQuantity[i]);
+            }
+            System.out.println(lsPesanan + " " + hargaFood);
             driver = chooseDriver(restoId);
-            jarak = HaversineScorer.computeCost(user.getLocation(), resto.getLocation());
+            System.out.println(driver);
+            jarak = scorer.computeCost(user.getLocation(), resto.getLocation());
+            System.out.println(jarak);
             ongkir = (int)jarak*2000;
-            orders = new Pesanan(userId, restoId, driver.getKode(), listOrder, method, ongkir, ongkir + hargaMakanan);
+            System.out.println(ongkir);
+            orders = new Pesanan(userId, restoId, driver.getKode(), lsPesanan, false, ongkir, ongkir + hargaFood);
             pesanan.insertOne(orders);
             return true;
         } catch (Exception e) {
@@ -274,18 +285,21 @@ public class MongoDbUtils {
         }
     }
     
-    public Driver chooseDriver(String restoLocId) {
+    public Driver chooseDriver(String restoId) {
         Driver idDriver = null;
-        Location restoLocation;
+        Restaurant restoLocation;
         List<Driver> lsDriver;
+        HaversineScorer cek = new HaversineScorer();
         try {
-            restoLocation = locations.find(eq("kode", restoLocId)).first();
+            System.out.println("MASUK CHOOSE DRIVER");
+            restoLocation = restaurants.find(eq("kode", restoId)).first();
+            System.out.println(restoLocation);
             lsDriver = getAllDriver();
             Collections.sort(lsDriver, new Comparator<Driver>() {
                 @Override
                 public int compare(Driver t, Driver t1) {
-                    Double tScore = HaversineScorer.computeCost(t.getLocation(), restoLocation);
-                    Double t1Score = HaversineScorer.computeCost(t1.getLocation(), restoLocation);
+                    Double tScore = cek.computeCost(t.getLocation(), restoLocation.getLocation());
+                    Double t1Score = cek.computeCost(t1.getLocation(), restoLocation.getLocation());
                     if(tScore > t1Score) {
                         return 1;
                     } else if(tScore < t1Score) {
@@ -771,4 +785,10 @@ public class MongoDbUtils {
 		
 		return resultList;
 	}
+    
+    public Restaurant getRestaurantByID(String id) {
+        Restaurant resto;
+        resto = restaurants.find(eq("kode", id)).first();
+        return resto;
+    }
 }

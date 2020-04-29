@@ -29,6 +29,7 @@
 	                <th>Price</th>
 <!--	                <th>Quantity</th>-->
 	                <th>Detail</th>
+                        <th>Pesan</th>
 	            </tr>
 	            <c:forEach items="${dataList}" var="dataItem">
 	            	<form action="ActionController" method="post">
@@ -39,7 +40,9 @@
          					</td>
 <!--				            <td>$dataItem.getQuantity()}</td>-->
 				            <td>${dataItem.getDetail()}</td>
+                                            <td><input type="submit" name="action" value="add to cart"></td>
 				        </tr>
+                                        <input type="hidden" name="id_resto" value="${idResto}">
 				        <input type="hidden" name="kode" value="${dataItem.getKode()}">
 				        <input type="hidden" name="name" value="${dataItem.getName()}">
 				        <input type="hidden" name="price" value="${dataItem.getPrice()}">

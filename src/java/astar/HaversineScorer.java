@@ -8,9 +8,9 @@ package astar;
 import model.Location;
 
 public class HaversineScorer {
-    public static double computeCost(Location from, Location to) {
+    public double computeCost(Location from, Location to) {
         double R = 6372.8; // In kilometers
-
+        
         double dLat = Math.toRadians(to.getLatitude() - from.getLatitude());
         double dLon = Math.toRadians(to.getLongitude() - from.getLongitude());
         double lat1 = Math.toRadians(from.getLatitude());
