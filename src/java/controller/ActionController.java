@@ -241,10 +241,11 @@ public class ActionController extends HttpServlet {
     			
     			String foodName[] = request.getParameterValues("foodname");
     			String foodPrice[] = request.getParameterValues("foodprice");
-    			String foodQuantity[] = request.getParameterValues("foodquant");
+//    			String foodQuantity[] = request.getParameterValues("foodquant");
     			String foodDetail[] = request.getParameterValues("fooddetail");
     			
-    			boolean result = mongodbUtils.insertRestaurant(fullName, telpNum, detail, foodName, foodPrice, foodQuantity, foodDetail);
+    			//boolean result = mongodbUtils.insertRestaurant(fullName, telpNum, detail, foodName, foodPrice, foodQuantity, foodDetail);
+    			boolean result = mongodbUtils.insertRestaurant(fullName, telpNum, detail, foodName, foodPrice, foodDetail);
     			
     			if(result) {
     				RequestDispatcher rd = request.getRequestDispatcher("/SuccessInsert.jsp");
@@ -429,9 +430,10 @@ public class ActionController extends HttpServlet {
         	String name = request.getParameter("name");
         	int price = Integer.parseInt(request.getParameter("price"));
         	String detail = request.getParameter("detail");
-        	int quantity = Integer.parseInt(request.getParameter("quantity"));
+        	//int quantity = Integer.parseInt(request.getParameter("quantity"));
         	
-        	Food food = new Food(name, price, quantity, detail);
+        	//Food food = new Food(name, price, quantity, detail);
+        	Food food = new Food(name, price, detail);
         	food.setKode(foodrow);
         	request.setAttribute("food", food);	
 			request.getRequestDispatcher("/UpdateFood.jsp").forward(request, response);

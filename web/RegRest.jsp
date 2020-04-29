@@ -31,7 +31,7 @@
 					<th>Choose to Delete</th>
 	                <th>Name</th>
 	                <th>Price</th>
-	                <th>Quantity</th>
+<!--	                <th>Quantity</th>-->
 	                <th>Detail</th>
 	            </tr>
 				
@@ -39,7 +39,7 @@
 					<TD><INPUT type="checkbox" name="chk"/></TD>
 					<TD><input type="text" name="foodname" style="font-family: 'Comfortaa'"></TD>
 					<TD><input type="text" name="foodprice" style="font-family: 'Comfortaa'"></TD>
-					<TD><input type="text" name="foodquant" style="font-family: 'Comfortaa'"></TD>
+<!--					<TD><input type="text" name="foodquant" style="font-family: 'Comfortaa'"></TD>-->
 					<TD><input type="text" name="fooddetail" style="font-family: 'Comfortaa'"></TD>
 				</TR>
 			</TABLE>
@@ -69,11 +69,15 @@
 							newcell.name = "foodprice";
 							break;
 						}
+//						case 3:{
+//							newcell.name = "foodquant";
+//							break;
+//						}
+//						case 4:{
+//							newcell.name = "fooddetail";
+//							break;
+//						}
 						case 3:{
-							newcell.name = "foodquant";
-							break;
-						}
-						case 4:{
 							newcell.name = "fooddetail";
 							break;
 						}

@@ -28,7 +28,7 @@
 	            <tr>
 	                <th>Name</th>
 	                <th>Price</th>
-	                <th>Quantity</th>
+	                <!--<th>Quantity</th>-->
 	                <th>Detail</th>
 	                <th>Update</th>
 	                <th>Delete</th>
@@ -40,7 +40,7 @@
 				            <td><fmt:setLocale value = "id_ID"/>
          						<fmt:formatNumber value = "${dataItem.getPrice()}" type = "currency"/>
          					</td>
-				            <td>${dataItem.getQuantity()}</td>
+<!--				            <td>$dataItem.getQuantity()}</td>-->
 				            <td>${dataItem.getDetail()}</td>
 				            <td><input type="submit" name="action" value="update food" style="font-family: 'Comfortaa'"></td>
 				        	<td><input type="submit" name="action" value="delete food" style="font-family: 'Comfortaa'"></td>
@@ -48,7 +48,7 @@
 				        <input type="hidden" name="kode" value="${dataItem.getKode()}">
 				        <input type="hidden" name="name" value="${dataItem.getName()}">
 				        <input type="hidden" name="price" value="${dataItem.getPrice()}">
-				        <input type="hidden" name="quantity" value="${dataItem.getQuantity()}">
+<!--				        <input type="hidden" name="quantity" value="$dataItem.getQuantity()}">-->
 				        <input type="hidden" name="detail" value="${dataItem.getDetail()}">
 				     </form>
 			    </c:forEach>

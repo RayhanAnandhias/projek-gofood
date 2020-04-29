@@ -419,7 +419,9 @@ public class MongoDbUtils {
 		return true;
 	}
     
-    public boolean insertRestaurant(String fullName, String telpNum, String detail, String listFoodName[], String listFoodPrice[], String listFoodQuant[], 
+//    public boolean insertRestaurant(String fullName, String telpNum, String detail, String listFoodName[], String listFoodPrice[], String listFoodQuant[], 
+//    		String listFoodDetail[]) {
+    public boolean insertRestaurant(String fullName, String telpNum, String detail, String listFoodName[], String listFoodPrice[], 
     		String listFoodDetail[]) {
 		try {
 			List<String> foodId = new ArrayList<>();
@@ -433,7 +435,9 @@ public class MongoDbUtils {
 			
 			//iteator for inserting food to the collection
 			for(int i = 0; i < listFoodName.length; i++) {
-				Food food = new Food(listFoodName[i], Integer.parseInt(listFoodPrice[i]), Integer.parseInt(listFoodQuant[i]),
+//				Food food = new Food(listFoodName[i], Integer.parseInt(listFoodPrice[i]), Integer.parseInt(listFoodQuant[i]),
+//						listFoodDetail[i]);
+				Food food = new Food(listFoodName[i], Integer.parseInt(listFoodPrice[i]),
 						listFoodDetail[i]);
 				
 				id = new ObjectId().toString();

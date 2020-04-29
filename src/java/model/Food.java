@@ -4,7 +4,7 @@ public class Food {
 	private String kode;
 	private String name;
 	private int price;
-	private int quantity;
+//	private int quantity;
 	private String detail;
 	//private List<Picture> picture;
 	
@@ -12,12 +12,12 @@ public class Food {
 	    super();
 	}
 	
-	public Food(String name, int price, int quantity,
+	public Food(String name, int price, //int quantity,
 			String detail) {
 		super();
 		this.name = name;
 		this.price = price;
-		this.quantity = quantity;
+//		this.quantity = quantity;
 		this.detail = detail;
 	}
 	
@@ -45,13 +45,13 @@ public class Food {
 		this.price = price;
 	}
 	
-	public int getQuantity() {
-		return this.quantity;
-	}
-	
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+//	public int getQuantity() {
+//		return this.quantity;
+//	}
+//	
+//	public void setQuantity(int quantity) {
+//		this.quantity = quantity;
+//	}
 	
 	public String getDetail() {
 		return this.detail;

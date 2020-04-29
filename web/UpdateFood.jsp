@@ -19,7 +19,7 @@
 	<form action="ActionController" method="post" style="font-family: 'Comfortaa'">
 		<span style="margin-left:35em">Name </span> <span style="margin-left:5.3em"><input type="text" name="updatedname" value="${food.getName()}" style="font-family: 'Comfortaa'"></span> <BR><BR>
 		<span style="margin-left:35em">Price </span> <span style="margin-left:6.2em"><input type="text" name="updatedprice" value="${food.getPrice()}" style="font-family: 'Comfortaa'"></span><BR><BR>
-		<span style="margin-left:35em">Quantity </span> <span style="margin-left:7.3em"><input type="text" name="updatedquantity" value="${food.getQuantity()}" style="font-family: 'Comfortaa'"></span><BR><BR>
+<!--		<span style="margin-left:35em">Quantity </span> <span style="margin-left:7.3em"><input type="text" name="updatedquantity" value="$food.getQuantity()}" style="font-family: 'Comfortaa'"></span><BR><BR>-->
 		<span style="margin-left:35em">Detail </span> <span style="margin-left:3em"><input type="text" name="updateddetail" value="${food.getDetail()}" style="font-family: 'Comfortaa'"></span><BR><BR>
 		
 		<input type="hidden" name="name" value="${food.getName()}">
