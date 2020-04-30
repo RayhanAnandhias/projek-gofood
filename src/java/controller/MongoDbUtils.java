@@ -438,34 +438,39 @@ public class MongoDbUtils {
     public boolean insertRestaurant(String fullName, String telpNum, String detail, String listFoodName[], String listFoodPrice[], 
     		String listFoodDetail[]) {
 		try {
-			List<String> foodId = new ArrayList<>();
+			List<Food> foodList = new ArrayList<>();
 			
 			//set var location and set the value
 			Random random = new Random();
                         int max = 10;
                         int min = 9;
 			Location location = locations.find(eq("kode", Integer.toString(random.nextInt((max-min) + 1) + min))).first();
-			String id = null;
+			String idFood = null;
+                        String idResto = null;
 			
+			Restaurant restaurant = new Restaurant(fullName, location, telpNum, detail, null);
+			idResto = new ObjectId().toString();
+			restaurant.setKode(idResto);
+			restaurants.insertOne(restaurant);	
+                        
 			//iteator for inserting food to the collection
 			for(int i = 0; i < listFoodName.length; i++) {
 //				Food food = new Food(listFoodName[i], Integer.parseInt(listFoodPrice[i]), Integer.parseInt(listFoodQuant[i]),
 //						listFoodDetail[i]);
 				Food food = new Food(listFoodName[i], Integer.parseInt(listFoodPrice[i]),
-						listFoodDetail[i]);
+						listFoodDetail[i], idResto);
+                                Food temp = new Food(listFoodName[i], Integer.parseInt(listFoodPrice[i]),
+						listFoodDetail[i], null);
 				
-				id = new ObjectId().toString();
-				foodId.add(id);
-				food.setKode(id);
+                                foodList.add(temp);
+				idFood = new ObjectId().toString();
+				food.setKode(idFood);
 				foods.insertOne(food);
 			}
+                        
+                        UpdateResult updateResult = 
+                            restaurants.updateOne(eq("kode", idResto), set("foods", foodList));
 			
-			Restaurant restaurant = new Restaurant(fullName, location, telpNum, detail, foodId);
-			restaurant.setLocation(location);
-			id = new ObjectId().toString();
-			restaurant.setKode(id);
-			System.out.println(location.getStreet());
-			restaurants.insertOne(restaurant);			
 			System.out.println("data inserted");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -577,12 +582,12 @@ public class MongoDbUtils {
 		}
 		int counter = 0;
 		FindIterable<Food> foodIterable = foods.find();
-		List<String> idFood = restaurant.getListFoodId();
-		for(String id : idFood) {
+		List<Food> food = restaurant.getFoods();
+		for(Food id : food) {
 			for (Food temp : foodIterable) {
-				if(temp.getKode().equals(id)) {
+				if(temp.getKode().equals(id.getKode())) {
 					counter++;
-					foods.deleteOne(eq("kode", id));
+					foods.deleteOne(eq("kode", id.getKode()));
 				}
 					
 			}
@@ -594,26 +599,31 @@ public class MongoDbUtils {
 		return true;
 	}
     
-    public ArrayList<Food> getFoodOnRestaurant(String row) throws IOException {		
-    	ArrayList<Food> resultList = new ArrayList<>();
-    	List<String> foodId = new ArrayList<>();
-		FindIterable<Restaurant> restaurantIterable = restaurants.find();
+    public List<Food> getFoodOnRestaurant(String row) throws IOException {		
+    	
+    	List<Food> food = new ArrayList<>();
+		//FindIterable<Restaurant> restaurantIterable = restaurants.find();
 		
-		for (Restaurant restaurant : restaurantIterable) {
-			if(restaurant.getKode().equals(row)) {
-				foodId = restaurant.getListFoodId();
-				break;
-			}
-		}
-		FindIterable<Food> foodIterable = foods.find();
-		for(String id : foodId) {
-			for(Food food : foodIterable) {
-				if(food.getKode().equals(id)) {
-					resultList.add(food);
-				}
-			}
-		}
-		return resultList;
+//		for (Restaurant restaurant : restaurantIterable) {
+//			if(restaurant.getKode().equals(row)) {
+//				food = restaurant.getFoods();
+//				break;
+//			}
+//		}
+//                System.out.println(food);
+//		FindIterable<Food> foodIterable = foods.find();
+//		for(Food id : food) {
+//			for(Food temp : foodIterable) {
+//				if(temp.getKode().equals(id.getKode())) {
+//					resultList.add(temp);
+//				}
+//			}
+//		}
+                FindIterable<Food> foodIterable = foods.find(eq("idResto", row));
+                for (Food f : foodIterable) {
+                    food.add(f);
+                } 
+		return food;
     }
     
     public ArrayList<Restaurant> getRestaurantOnFood(String rowFood) throws IOException {
@@ -625,11 +635,10 @@ public class MongoDbUtils {
         return resultList;
     }
     
-    public boolean updateFoodOnRestaurant(String row, String name, int price, int quantity, String detail) {		
+    public boolean updateFoodOnRestaurant(String row, String name, int price, String detail, String idRest) {		
 		try {	
 			foods.updateOne(Filters.eq("kode", row), Updates.set("name", name));
 			foods.updateOne(Filters.eq("kode", row), Updates.set("price", price));
-			foods.updateOne(Filters.eq("kode", row), Updates.set("quantity", quantity));
 			foods.updateOne(Filters.eq("kode", row), Updates.set("detail", detail));
 			System.out.println("data updated");
 		} catch (Exception e) {
@@ -646,13 +655,17 @@ public class MongoDbUtils {
 			if(temp.getKode().equals(restRow))
 				restaurant = temp;
 		}
-		List<String> idFood = restaurant.getListFoodId();
+		List<Food> idFood = restaurant.getFoods();
 		if(idFood.size() > 1) {
 			DeleteResult del = foods.deleteOne(eq("kode", foodRow));
 			System.out.println(idFood.size());
-			idFood.remove(foodRow);
+                        for (Food food : idFood) {
+                            if(food.getKode().equals(foodRow)) {
+                                idFood.remove(food);
+                            }
+                        }
 	    	System.out.println(idFood.size());
-	    	restaurants.updateOne(Filters.eq("kode", restRow), Updates.set("listFoodId", idFood));
+	    	restaurants.updateOne(Filters.eq("kode", restRow), Updates.set("foods", idFood));
 			System.out.println("del on Food = " + del.getDeletedCount());
 			return true;
 		}

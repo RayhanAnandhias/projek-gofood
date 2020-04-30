@@ -220,7 +220,7 @@ public class ActionController extends HttpServlet {
             String name = request.getParameter("name");
             int price = Integer.parseInt(request.getParameter("price"));
             String detail = request.getParameter("detail");
-            Food onePesanan = new Food(name, price, detail);
+            Food onePesanan = new Food(name, price, detail, id_resto);
             onePesanan.setKode(kodeFood);
             fd.add(onePesanan);
             showFoodOnRestaurantDataUser(request, response, mongodbUtils, vrow);
@@ -472,10 +472,11 @@ public class ActionController extends HttpServlet {
         	String name = request.getParameter("name");
         	int price = Integer.parseInt(request.getParameter("price"));
         	String detail = request.getParameter("detail");
+                String idrest = request.getParameter("idResto");
         	//int quantity = Integer.parseInt(request.getParameter("quantity"));
         	
         	//Food food = new Food(name, price, quantity, detail);
-        	Food food = new Food(name, price, detail);
+        	Food food = new Food(name, price, detail, idrest);
         	food.setKode(foodrow);
         	request.setAttribute("food", food);	
 			request.getRequestDispatcher("/UpdateFood.jsp").forward(request, response);
@@ -522,11 +523,11 @@ public class ActionController extends HttpServlet {
         	String row = request.getParameter("kode");
         	String name = request.getParameter("updatedname");
         	int price = Integer.parseInt(request.getParameter("updatedprice"));
-        	int quantity = Integer.parseInt(request.getParameter("updatedquantity"));
         	String detail = request.getParameter("updateddetail");
+                String idrest = request.getParameter("idRest");
         	
         	System.out.println("ROW UPDATED = "+row);				
-			boolean resultUpdate = mongodbUtils.updateFoodOnRestaurant(row, name, price, quantity, detail);
+			boolean resultUpdate = mongodbUtils.updateFoodOnRestaurant(row, name, price, detail, idrest);
 			if(resultUpdate) {
 				restaurantName = name;
 	        	showFoodOnRestaurantData(request, response, mongodbUtils, vrow);
@@ -581,6 +582,7 @@ public class ActionController extends HttpServlet {
 			MongoDbUtils mongodbUtils, String row) {
     	try {
 			List<Food> listFood = mongodbUtils.getFoodOnRestaurant(row);
+                        System.out.println(listFood);
 			request.setAttribute("dataList", listFood);
 			request.setAttribute("restnameparam", restaurantName);
 			request.getRequestDispatcher("/ReadFood.jsp").forward(request, response);

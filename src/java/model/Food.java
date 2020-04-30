@@ -6,6 +6,7 @@ public class Food {
 	private int price;
 //	private int quantity;
 	private String detail;
+        private String idResto;
 	//private List<Picture> picture;
 	
 	public Food() {
@@ -13,12 +14,13 @@ public class Food {
 	}
 	
 	public Food(String name, int price, //int quantity,
-			String detail) {
+			String detail, String idResto) {
 		super();
 		this.name = name;
 		this.price = price;
 //		this.quantity = quantity;
 		this.detail = detail;
+                this.idResto = idResto;
 	}
 	
 	public final String getKode() {
@@ -60,4 +62,12 @@ public class Food {
 	public void setDetail(String detail) {
 		this.detail = detail;
 	}
+
+        public void setIdResto(String idResto) {
+            this.idResto = idResto;
+        }
+
+        public String getIdResto() {
+            return idResto;
+        }
 }

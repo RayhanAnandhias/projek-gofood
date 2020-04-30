@@ -24,6 +24,7 @@
 		
 		<input type="hidden" name="name" value="${food.getName()}">
 		<input type="hidden" name="kode" value="${food.getKode()}">
+                <input type="hidden" name="idResto" value="${food.getIdResto()}">
 		<span style="margin-left:60em">
 			<input type="hidden" name="action" value="AfterUpdateFood">
 			<input type="submit" value="Update" style="font-family: 'Comfortaa'"/>

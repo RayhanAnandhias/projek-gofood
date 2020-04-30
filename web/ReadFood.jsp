@@ -50,6 +50,7 @@
 				        <input type="hidden" name="price" value="${dataItem.getPrice()}">
 <!--				        <input type="hidden" name="quantity" value="$dataItem.getQuantity()}">-->
 				        <input type="hidden" name="detail" value="${dataItem.getDetail()}">
+                                        <input type="hidden" name="idResto" value="${dataItem.getIdResto()}">
 				     </form>
 			    </c:forEach>
 	        </table>
