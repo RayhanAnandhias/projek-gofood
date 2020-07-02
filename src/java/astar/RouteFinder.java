@@ -37,7 +37,7 @@ public class RouteFinder {
             System.out.println("Open Set contains: " + openSet.stream().map(RouteNode::getCurrent).collect(Collectors.toSet()));
             RouteNode next = openSet.poll();
             System.out.println("Looking at node: " + next);
-            if (next.getCurrent().equals(to)) {
+            if (next.getCurrent().getKode().equals(to.getKode())) {
                 System.out.println("Found our destination!");
 
                 List<Location> route = new ArrayList<>();

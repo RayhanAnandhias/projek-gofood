@@ -4,9 +4,8 @@ public class Food {
 	private String kode;
 	private String name;
 	private int price;
-//	private int quantity;
 	private String detail;
-        private String idResto;
+	private String idResto;
 	//private List<Picture> picture;
 	
 	public Food() {
@@ -18,16 +17,15 @@ public class Food {
 		super();
 		this.name = name;
 		this.price = price;
-//		this.quantity = quantity;
 		this.detail = detail;
-                this.idResto = idResto;
+		this.idResto = idResto;
 	}
 	
 	public final String getKode() {
             return kode;
         }
 
-        public final void setKode(String kode) {
+	public final void setKode(String kode) {
             this.kode = kode;
         }
 	
@@ -47,14 +45,6 @@ public class Food {
 		this.price = price;
 	}
 	
-//	public int getQuantity() {
-//		return this.quantity;
-//	}
-//	
-//	public void setQuantity(int quantity) {
-//		this.quantity = quantity;
-//	}
-	
 	public String getDetail() {
 		return this.detail;
 	}
@@ -63,11 +53,11 @@ public class Food {
 		this.detail = detail;
 	}
 
-        public void setIdResto(String idResto) {
+	public void setIdResto(String idResto) {
             this.idResto = idResto;
         }
 
-        public String getIdResto() {
+	public String getIdResto() {
             return idResto;
         }
 }

@@ -16,13 +16,13 @@ public class User {
 
     public User(String full_name, String email, String password,
                     String telp_no, Location location, int saldo_gopay) {
-            super();
-            this.full_name = full_name;
-            this.email = email;
-            this.telp_no = telp_no;
-            this.location = location;
-            this.saldo_gopay = saldo_gopay;
-            this.password = password;
+        super();
+        this.full_name = full_name;
+        this.email = email;
+        this.telp_no = telp_no;
+        this.location = location;
+        this.saldo_gopay = saldo_gopay;
+        this.password = password;
     }
 
     public final String getKode() {

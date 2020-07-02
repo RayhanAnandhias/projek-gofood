@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Date;
 import java.util.List;
 
 public class Pesanan {
@@ -11,6 +12,7 @@ public class Pesanan {
 	private boolean payment_method;
 	private int ongkir;
 	private int total_cost;
+	private Date date;
 	
 	public Pesanan() {
             super();
@@ -18,10 +20,9 @@ public class Pesanan {
 	
 	public Pesanan(String user_id, String restaurant_id,
 			String driver_id, List<ItemPesanan> pesanan,
-			boolean payment_method,
-			int ongkir, int total_cost) {
+			boolean payment_method, int ongkir, int total_cost) {
+
 		super();
-		
 		this.user_id = user_id;
 		this.restaurant_id = restaurant_id;
 		this.driver_id = driver_id;
@@ -29,13 +30,14 @@ public class Pesanan {
 		this.payment_method = payment_method;
 		this.ongkir = ongkir;
 		this.total_cost = total_cost;
+		this.date = new Date();
 	}
 	
 	public final String getKode() {
             return kode;
         }
 
-        public final void setKode(String kode) {
+	public final void setKode(String kode) {
             this.kode = kode;
         }
 	
@@ -93,5 +95,13 @@ public class Pesanan {
 	
 	public void setTotalCost(int total_cost) {
 		this.total_cost = total_cost;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }

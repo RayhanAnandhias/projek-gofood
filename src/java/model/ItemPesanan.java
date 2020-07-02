@@ -8,15 +8,17 @@ package model;
 public class ItemPesanan {
     private String idFood;
     private int quantity;
+    private String note;
 
     public ItemPesanan() {
         super();
     }
 
-    public ItemPesanan(String idFood, int quantity) {
+    public ItemPesanan(String idFood, int quantity, String note) {
         super();
         this.idFood = idFood;
         this.quantity = quantity;
+        this.note = note;
     }
 
     public String getIdFood() {
@@ -33,5 +35,13 @@ public class ItemPesanan {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

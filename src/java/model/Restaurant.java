@@ -29,7 +29,7 @@ public class Restaurant {
             return kode;
         }
 
-        public final void setKode(String kode) {
+	public final void setKode(String kode) {
             this.kode = kode;
         }
 	
@@ -65,11 +65,11 @@ public class Restaurant {
 		this.detail = detail;
 	}
 
-        public void setFoods(List<Food> foods) {
-            this.foods = foods;
-        }
+	public void setFoods(List<Food> foods) {
+		this.foods = foods;
+	}
 
-        public List<Food> getFoods() {
-            return foods;
-        }
+	public List<Food> getFoods() {
+		return foods;
+	}
 }
