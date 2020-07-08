@@ -78,7 +78,11 @@
 				            <td>${dataItem.getUserId()}</td>
 				            <td>${dataItem.getRestaurantId()}</td>
 				            <td>${dataItem.getDriverId()}</td>
-				            <td>${dataItem.getPesanan()}</td>
+			            	<td>
+				            	<c:forEach items="${dataItem.getPesanan()}" var="dataItempesanan">
+				            		${dataItempesanan.getIdFood()}
+				            	</c:forEach>
+				            </td>
 				            <td>${dataItem.getPaymentMethod()}</td>
 				            <td><fmt:setLocale value = "id_ID"/>
          						<fmt:formatNumber value = "${dataItem.getOngkir()}" type = "currency"/>
