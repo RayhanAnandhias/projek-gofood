@@ -420,9 +420,10 @@ public class MongoDbUtils {
                 Food temp = new Food(listFoodName[i], Integer.parseInt(listFoodPrice[i]),
                         listFoodDetail[i], null);
 
-                foodList.add(temp);
+                
                 idFood = new ObjectId().toString();
                 food.setKode(idFood);
+                foodList.add(temp);
                 foods.insertOne(food);
             }
 
@@ -619,13 +620,23 @@ public class MongoDbUtils {
         }
         List<Food> idFood = restaurant.getFoods();
         if(idFood.size() > 1) {
-            DeleteResult del = foods.deleteOne(eq("kode", foodRow));
-            System.out.println(idFood.size());
-            for (Food food : idFood) {
-                if(food.getKode().equals(foodRow)) {
-                    idFood.remove(food);
+        	FindIterable<Food> foodIterable = foods.find();
+            Food food = null;
+            for (Food temp : foodIterable) {
+                if(temp.getKode().equals(foodRow))
+                	food = temp;
+            }
+            System.out.println(food.getName());
+        	for (Food temp : idFood) {
+        		System.out.println(temp.getName());
+                if(temp.getName() == food.getName()) {
+                	System.out.println("in");
+                    idFood.remove(temp);
+                    System.out.println("after");
+                    break;
                 }
             }
+            DeleteResult del = foods.deleteOne(eq("kode", foodRow));
             System.out.println(idFood.size());
             restaurants.updateOne(Filters.eq("kode", restRow), Updates.set("foods", idFood));
             System.out.println("del on Food = " + del.getDeletedCount());
